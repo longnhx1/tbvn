@@ -1,0 +1,118 @@
+﻿@model IEnumerable<Lab_03.Models.Tour>
+@{
+    ViewData["Title"] = "Quản lý Tour";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-tour-list.css" asp-append-version="true" />
+}
+
+<div class="ticket-list-page">
+    <header class="ticket-list-header">
+        <div class="ticket-list-header__left">
+            <h1>Quản lý Tour</h1>
+            <p>@Model.Count() tour trong hệ thống</p>
+        </div>
+        <div class="ticket-list-header__right">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <label for="tourSearchInput" class="sr-only">Tìm tour</label>
+                <input type="search" id="tourSearchInput" placeholder="Tìm kiếm tour…" autocomplete="off" />
+            </div>
+            <a asp-area="Admin" asp-controller="Tour" asp-action="Add" class="btn-primary">
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                <span>Thêm tour mới</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="ticket-table-card">
+        <div class="table-responsive">
+            <table class="ticket-table" id="productTable">
+                <thead>
+                    <tr>
+                        <th class="th-image">Hình ảnh</th>
+                        <th class="th-name">Tên tour</th>
+                        <th class="th-category">Điểm đến</th>
+                        <th class="th-price">Giá</th>
+                        <th class="th-desc">Mô tả</th>
+                        <th class="th-actions">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr class="empty-row">
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <i class="fa-solid fa-box-open" aria-hidden="true"></i>
+                                    <h3>Chưa có tour nào</h3>
+                                    <p>Bắt đầu bằng cách thêm tour đầu tiên vào hệ thống.</p>
+                                    <a asp-area="Admin" asp-controller="Tour" asp-action="Add" class="btn-primary">
+                                        <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                                        Thêm tour mới
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var tour in Model)
+                        {
+                            <tr class="ticket-row" data-ticket-name="@tour.Name.ToLower()" data-product-name="@tour.Name.ToLower()">
+                                <td class="td-image">
+                                    @if (!string.IsNullOrEmpty(tour.ImageUrl))
+                                    {
+                                        <div class="ticket-thumb">
+                                            <img src="@tour.ImageUrl" alt="@tour.Name" />
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="ticket-thumb ticket-thumb--empty">
+                                            <i class="fa-solid fa-image" aria-hidden="true"></i>
+                                        </div>
+                                    }
+                                </td>
+                                <td class="td-name">
+                                    <span class="ticket-name">@tour.Name</span>
+                                </td>
+                                <td class="td-category">
+                                    <span class="category-badge">
+                                        @(tour.Destination?.Name ?? "Chưa phân loại")
+                                    </span>
+                                </td>
+                                <td class="td-price">
+                                    <span class="price-text">@string.Format("{0:#,##0}", tour.Price) đ</span>
+                                </td>
+                                <td class="td-desc">
+                                    <span class="desc-text" title="@tour.Description">
+                                        @(tour.Description?.Length > 60 ? tour.Description.Substring(0, 60) + "..." : tour.Description ?? "—")
+                                    </span>
+                                </td>
+                                <td class="td-actions">
+                                    <div class="action-buttons">
+                                        <a asp-area="Admin" asp-controller="Tour" asp-action="Display" asp-route-id="@tour.Id" class="action-btn action-btn--view" title="Xem chi tiết">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
+                                        <a asp-area="Admin" asp-controller="Tour" asp-action="Update" asp-route-id="@tour.Id" class="action-btn action-btn--edit" title="Chỉnh sửa">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                        <a asp-area="Admin" asp-controller="Tour" asp-action="Delete" asp-route-id="@tour.Id" class="action-btn action-btn--delete" title="Xóa tour" data-product-name="@tour.Name">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/admin-tour-list.js" asp-append-version="true"></script>
+}

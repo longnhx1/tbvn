@@ -1,0 +1,241 @@
+@model Lab_03.Models.ViewModels.AdminDashboardViewModel
+@using Lab_03.Models
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+
+<div class="dashboard">
+    <div class="dashboard__container">
+
+        <header class="dashboard__header">
+            <div class="dashboard__header-left">
+                <div class="dashboard__header-eyebrow">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <span>Vận hành tour · Việt Nam</span>
+                </div>
+                <h1 class="dashboard__title">Tổng quan</h1>
+            </div>
+            <div class="dashboard__greeting">
+                <div class="dashboard__time-block">
+                    <i class="fa-regular fa-clock"></i>
+                    <span id="currentTime"></span>
+                </div>
+            </div>
+        </header>
+
+        <section class="dashboard__stats" aria-label="Chỉ số vận hành">
+
+            <article class="stat-card stat-card--bookings">
+                <div class="stat-card__bg-icon"><i class="fa-solid fa-ticket"></i></div>
+                <div class="stat-card__content">
+                    <span class="stat-card__label">Tổng đặt chỗ</span>
+                    <span class="stat-card__value" data-counter="@Model.TotalBookings">0</span>
+                    <span class="stat-card__trend stat-card__trend--neutral">
+                        <i class="fa-solid fa-database"></i>
+                        Tất cả thời gian
+                    </span>
+                </div>
+                <div class="stat-card__icon">
+                    <i class="fa-solid fa-ticket"></i>
+                </div>
+            </article>
+
+            <article class="stat-card stat-card--pending">
+                <div class="stat-card__bg-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                <div class="stat-card__content">
+                    <span class="stat-card__label">Chờ xác nhận</span>
+                    <span class="stat-card__value" data-counter="@Model.PendingBookings">0</span>
+                    <span class="stat-card__trend stat-card__trend--neutral">
+                        <i class="fa-solid fa-bell"></i>
+                        Cần xử lý sớm
+                    </span>
+                </div>
+                <div class="stat-card__icon">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                </div>
+            </article>
+
+            <article class="stat-card stat-card--revenue">
+                <div class="stat-card__bg-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+                <div class="stat-card__content">
+                    <span class="stat-card__label">Doanh thu (đã xác nhận &amp; hoàn thành)</span>
+                    <span class="stat-card__value stat-card__value--currency" data-counter="@Model.TotalRevenueRounded">0</span>
+                    <span class="stat-card__trend stat-card__trend--neutral">
+                        <i class="fa-solid fa-coins"></i>
+                        Tổng giá trị booking
+                    </span>
+                </div>
+                <div class="stat-card__icon">
+                    <i class="fa-solid fa-sack-dollar"></i>
+                </div>
+            </article>
+
+            <article class="stat-card stat-card--tours">
+                <div class="stat-card__bg-icon"><i class="fa-solid fa-route"></i></div>
+                <div class="stat-card__content">
+                    <span class="stat-card__label">Tour đang mở bán</span>
+                    <span class="stat-card__value" data-counter="@Model.ToursOnSale">0</span>
+                    <span class="stat-card__trend stat-card__trend--neutral">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        Còn chỗ · ngày khởi hành chưa qua
+                    </span>
+                </div>
+                <div class="stat-card__icon">
+                    <i class="fa-solid fa-route"></i>
+                </div>
+            </article>
+
+            <article class="stat-card stat-card--customers">
+                <div class="stat-card__bg-icon"><i class="fa-solid fa-user-check"></i></div>
+                <div class="stat-card__content">
+                    <span class="stat-card__label">Khách có đặt (30 ngày)</span>
+                    <span class="stat-card__value" data-counter="@Model.DistinctBookersLast30Days">0</span>
+                    <span class="stat-card__trend stat-card__trend--neutral">
+                        <i class="fa-solid fa-users"></i>
+                        @Model.TotalUsers khách đăng ký trong hệ thống
+                    </span>
+                </div>
+                <div class="stat-card__icon">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+            </article>
+
+        </section>
+
+        <section class="dashboard__section dashboard__section--actions">
+            <div class="dashboard__section-header">
+                <div class="dashboard__section-icon">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <h2 class="dashboard__section-title">Thao tác nhanh</h2>
+            </div>
+            <div class="dashboard__section-body">
+                <div class="quick-actions">
+                    <a asp-area="Admin" asp-controller="Booking" asp-action="Index" asp-route-status="pending" class="quick-action quick-action--primary">
+                        <div class="quick-action__icon">
+                            <i class="fa-solid fa-list-check"></i>
+                        </div>
+                        <span>Booking chờ xác nhận</span>
+                    </a>
+
+                    <a asp-area="Admin" asp-controller="Tour" asp-action="Add" class="quick-action">
+                        <div class="quick-action__icon">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <span>Thêm tour mới</span>
+                    </a>
+
+                    <a asp-area="Admin" asp-controller="Booking" asp-action="Index" class="quick-action">
+                        <div class="quick-action__icon">
+                            <i class="fa-solid fa-ticket"></i>
+                        </div>
+                        <span>Tất cả đặt chỗ</span>
+                    </a>
+
+                    <a asp-area="Admin" asp-controller="Tour" asp-action="Index" class="quick-action">
+                        <div class="quick-action__icon">
+                            <i class="fa-solid fa-route"></i>
+                        </div>
+                        <span>Danh sách tour</span>
+                    </a>
+
+                    <a asp-area="Admin" asp-controller="Users" asp-action="Create" class="quick-action">
+                        <div class="quick-action__icon">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </div>
+                        <span>Tạo tài khoản nội bộ</span>
+                    </a>
+
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="quick-action quick-action--link">
+                        <div class="quick-action__icon">
+                            <i class="fa-solid fa-globe"></i>
+                        </div>
+                        <span>Xem website khách</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <div class="dashboard__grid">
+
+            <section class="dashboard__section">
+                <div class="dashboard__section-header">
+                    <div class="dashboard__section-icon">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                    <h2 class="dashboard__section-title">Đặt chỗ gần đây</h2>
+                    <a asp-area="Admin" asp-controller="Booking" asp-action="Index" class="dashboard__refresh-btn" title="Xem tất cả" style="text-decoration:none;">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="activity-list">
+                    @if (Model.RecentBookings.Count == 0)
+                    {
+                        <p class="activity-item__meta" style="padding:1rem 1.25rem;">Chưa có đặt chỗ. Kiểm tra tour đang mở bán và kênh marketing.</p>
+                    }
+                    else
+                    {
+                        foreach (var b in Model.RecentBookings)
+                        {
+                            var iconClass = b.Status switch
+                            {
+                                BookingStatus.Cancelled => "activity-item__icon--danger",
+                                BookingStatus.Pending => "activity-item__icon--warning",
+                                BookingStatus.Confirmed => "activity-item__icon--success",
+                                BookingStatus.Completed => "activity-item__icon--success",
+                                _ => "activity-item__icon--info"
+                            };
+                            <div class="activity-item">
+                                <div class="activity-item__icon @iconClass">
+                                    <i class="fa-solid fa-ticket"></i>
+                                </div>
+                                <div class="activity-item__content">
+                                    <p class="activity-item__title">#@b.BookingId — @b.TourName</p>
+                                    <span class="activity-item__meta">@b.ContactName · @b.Adults người lớn@(b.Children > 0 ? $", {b.Children} trẻ em" : "") · @BookingStatusDisplay.ToVietnamese(b.Status)</span>
+                                </div>
+                                <span class="activity-item__time">@b.CreatedAt.ToLocalTime().ToString("dd/MM HH:mm")</span>
+                            </div>
+                        }
+                    }
+                </div>
+            </section>
+
+            <section class="dashboard__section">
+                <div class="dashboard__section-header">
+                    <div class="dashboard__section-icon">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <h2 class="dashboard__section-title">Tóm tắt nhanh</h2>
+                </div>
+                <div class="system-info">
+                    <div class="system-info__item">
+                        <span class="system-info__label">Booking chờ</span>
+                        <span class="system-info__value">@Model.PendingBookings</span>
+                    </div>
+                    <div class="system-info__item">
+                        <span class="system-info__label">Tour mở bán</span>
+                        <span class="system-info__value">@Model.ToursOnSale</span>
+                    </div>
+                    <div class="system-info__item">
+                        <span class="system-info__label">Tổng tour trong kho</span>
+                        <span class="system-info__value">@Model.TotalToursInCatalog</span>
+                    </div>
+                </div>
+
+                <div class="mini-stats">
+                    <div class="mini-stat">
+                        <span class="mini-stat__label">Đặt chỗ</span>
+                        <span class="mini-stat__value" data-counter="@Model.TotalBookings">0</span>
+                    </div>
+                    <div class="mini-stat mini-stat--warning">
+                        <span class="mini-stat__label">Chờ duyệt</span>
+                        <span class="mini-stat__value" data-counter="@Model.PendingBookings">0</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,37 @@
+@model Lab_03.Models.Destination
+@{
+    ViewData["Title"] = "Add Destination";
+}
+
+<link rel="stylesheet" href="~/css/admin-tour-form.css"/>
+
+<div class="form-container">
+    <div class="form-wrapper">
+        <!-- Header Section -->
+        <div class="form-header">
+            <h1 class="form-title">Add Destination</h1>
+            <p class="form-subtitle">Create a new destination for your tour catalog</p>
+        </div>
+
+        <!-- Form Section -->
+        <form asp-action="Add" method="post" class="category-form">
+            <div class="form-field">
+                <label asp-for="Name" class="form-label">Destination Name</label>
+                <div class="input-wrapper">
+                    <input asp-for="Name" class="form-input" placeholder="Enter category name" />
+                    <span asp-validation-for="Name" class="form-error"></span>
+                </div>
+                <p class="form-hint">Choose a clear, descriptive name for your destination</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Add Destination</button>
+                <a href="/Admin/Categories" class="btn btn-secondary">Cancel</a>
+                <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="btn btn-tertiary">Back to Dashboard</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="~/js/admin-destination-form.js"></script>

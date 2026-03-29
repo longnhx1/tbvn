@@ -1,0 +1,92 @@
+@model Lab_03.Models.Booking
+@using Lab_03.Models
+@{
+    ViewData["Title"] = $"Đặt chỗ #{Model.Id}";
+    var badgeClass = Model.Status switch
+    {
+        BookingStatus.Pending => "admin-badge--pending",
+        BookingStatus.Confirmed => "admin-badge--confirmed",
+        BookingStatus.Cancelled => "admin-badge--cancelled",
+        BookingStatus.Completed => "admin-badge--completed",
+        _ => ""
+    };
+}
+
+<div class="admin-page">
+    <a class="admin-back-link" asp-action="Index"><i class="fa-solid fa-arrow-left"></i> Quay lại danh sách</a>
+
+    <header class="admin-page__header">
+        <div class="admin-page__header-main">
+            <p class="admin-page__eyebrow"><i class="fa-solid fa-file-invoice"></i> Chi tiết đặt chỗ</p>
+            <h1 class="admin-page__title">Đơn #@Model.Id</h1>
+            <p class="admin-page__subtitle">
+                <span class="admin-badge @badgeClass">@BookingStatusDisplay.ToVietnamese(Model.Status)</span>
+                <span style="margin-left:0.5rem;color:var(--admin-color-text-secondary);">Tạo lúc @Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span>
+            </p>
+        </div>
+        <div class="admin-page__actions">
+            <form asp-action="UpdateStatus" method="post" class="admin-actions">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+                <select name="status" class="admin-select-compact" aria-label="Đổi trạng thái">
+                    @foreach (BookingStatus s in Enum.GetValues<BookingStatus>())
+                    {
+                        if (Model.Status == s)
+                        {
+                            <option value="@s" selected>@BookingStatusDisplay.ToVietnamese(s)</option>
+                        }
+                        else
+                        {
+                            <option value="@s">@BookingStatusDisplay.ToVietnamese(s)</option>
+                        }
+                    }
+                </select>
+                <button type="submit" class="admin-btn admin-btn--primary admin-btn--sm">Lưu trạng thái</button>
+            </form>
+        </div>
+    </header>
+
+    <div class="admin-detail-grid">
+        <div class="admin-card">
+            <div class="admin-card__body admin-card__body--padded">
+                <h2 style="margin:0 0 1rem;font-size:1rem;font-weight:700;">Thông tin liên hệ</h2>
+                <div class="admin-kv">
+                    <div class="admin-kv__row"><span class="admin-kv__label">Họ tên</span><span class="admin-kv__value">@Model.ContactName</span></div>
+                    <div class="admin-kv__row"><span class="admin-kv__label">Điện thoại</span><span class="admin-kv__value">@Model.ContactPhone</span></div>
+                    <div class="admin-kv__row"><span class="admin-kv__label">Email</span><span class="admin-kv__value">@Model.ContactEmail</span></div>
+                    <div class="admin-kv__row"><span class="admin-kv__label">Ghi chú</span><span class="admin-kv__value">@(string.IsNullOrWhiteSpace(Model.Note) ? "—" : Model.Note)</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="admin-card">
+            <div class="admin-card__body admin-card__body--padded">
+                <h2 style="margin:0 0 1rem;font-size:1rem;font-weight:700;">Tour &amp; thanh toán</h2>
+                <div class="admin-kv">
+                    <div class="admin-kv__row"><span class="admin-kv__label">Tour</span><span class="admin-kv__value">@(Model.Tour?.Name ?? "—")</span></div>
+                    <div class="admin-kv__row"><span class="admin-kv__label">Ngày đi</span><span class="admin-kv__value">@Model.TravelDate.ToString("dd/MM/yyyy")</span></div>
+                    <div class="admin-kv__row"><span class="admin-kv__label">Khách</span><span class="admin-kv__value">@Model.Adults người lớn@(Model.Children > 0 ? $", {Model.Children} trẻ em" : "")</span></div>
+                    <div class="admin-kv__row"><span class="admin-kv__label">Đơn giá</span><span class="admin-kv__value">@Model.UnitPrice.ToString("N0") đ / khách</span></div>
+                    <div class="admin-kv__row"><span class="admin-kv__label">Tổng thanh toán</span><span class="admin-kv__value"><strong>@Model.TotalPrice.ToString("N0") đ</strong></span></div>
+                    <div class="admin-kv__row">
+                        <span class="admin-kv__label">Hình thức thanh toán</span>
+                        <span class="admin-kv__value">
+                            @if (Model.PaymentMode == BookingPaymentMode.Installment)
+                            {
+                                <text>Trả góp @Model.InstallmentMonths tháng (lãi @Model.MonthlyInterestPercent%/tháng)</text>
+                            }
+                            else
+                            {
+                                <text>Thanh toán 100%</text>
+                            }
+                        </span>
+                    </div>
+                    <div class="admin-kv__row"><span class="admin-kv__label">Đã nộp (demo)</span><span class="admin-kv__value"><strong>@Model.TotalPaid.ToString("N0") đ</strong></span></div>
+                    @if (Model.Status == BookingStatus.Cancelled && Model.RefundAmount.HasValue)
+                    {
+                        <div class="admin-kv__row"><span class="admin-kv__label">Hoàn tiền</span><span class="admin-kv__value"><strong>@Model.RefundAmount.Value.ToString("N0") đ</strong></span></div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

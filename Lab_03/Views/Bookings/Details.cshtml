@@ -1,0 +1,125 @@
+@model Lab_03.Models.Booking
+@using Lab_03.Models
+@using Lab_03.Models.ViewModels
+@{
+    ViewData["Title"] = $"Đặt chỗ #{Model.Id}";
+    var card = ViewData["TicketCard"] as BookingTicketCardModel;
+    var payQr = ViewData["DemoPayQrDataUrl"] as string;
+    var currentDueAmount = ViewData["CurrentDueAmount"] as decimal?;
+    var currentDueLabel = ViewData["CurrentDueLabel"] as string;
+}
+
+<div class="booking-page">
+    <nav class="tour-detail__breadcrumb" aria-label="Breadcrumb" style="max-width:720px;margin:0 auto 1rem;padding:0 1rem;">
+        <a asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
+        <span aria-hidden="true">/</span>
+        <a asp-action="MyOrders">Tour đã đặt</a>
+        <span aria-hidden="true">/</span>
+        <span>#@Model.Id</span>
+    </nav>
+
+    <article class="booking-detail-card">
+        <header class="booking-detail-card__head">
+            <span class="booking-detail-card__badge">Đặt chỗ #@Model.Id</span>
+            <span class="booking-order-card__status booking-order-card__status--@Model.Status.ToString().ToLowerInvariant()">
+                @BookingStatusDisplay.ToVietnamese(Model.Status)
+            </span>
+        </header>
+
+        <h1 class="booking-detail-card__title">@(Model.Tour?.Name ?? "Tour")</h1>
+
+        <div class="booking-detail-grid">
+            <section class="booking-detail-section">
+                <h2>Khách &amp; liên hệ</h2>
+                <ul>
+                    <li><strong>Người liên hệ:</strong> @Model.ContactName</li>
+                    <li><strong>Điện thoại:</strong> @Model.ContactPhone</li>
+                    <li><strong>Email:</strong> @Model.ContactEmail</li>
+                    <li><strong>Số khách:</strong> @Model.Adults người lớn, @Model.Children trẻ em</li>
+                    <li><strong>Ngày đi:</strong> @Model.TravelDate.ToString("dd/MM/yyyy")</li>
+                </ul>
+            </section>
+            <section class="booking-detail-section booking-detail-section--accent">
+                <h2>Thanh toán</h2>
+                <p class="booking-detail-unit"><strong>Thanh toán demo:</strong> @(Model.IsDemoPaid ? "Đã hoàn tất" : "Chưa hoàn tất") @if (Model.IsDemoPaid && !string.IsNullOrEmpty(Model.DemoPaymentRef)) { <span class="booking-success__ref">(@Model.DemoPaymentRef)</span> }</p>
+                @if (!Model.IsDemoPaid && currentDueAmount is { } amt)
+                {
+                    <p class="booking-detail-unit" style="margin-top:0.5rem;">
+                        <strong>Kỳ tiếp theo:</strong> @(currentDueLabel ?? "Thanh toán") - <span>@amt.ToString("N0") đ</span>
+                    </p>
+                }
+                <p class="booking-detail-unit"><strong>Đơn giá (người lớn) tại thời điểm đặt:</strong> @Model.UnitPrice.ToString("N0") đ</p>
+                <p class="booking-detail-total"><span>Tổng thanh toán</span><strong>@Model.TotalPrice.ToString("N0") đ</strong></p>
+                @if (!string.IsNullOrWhiteSpace(Model.Note))
+                {
+                    <p class="booking-detail-note"><strong>Ghi chú:</strong> @Model.Note</p>
+                }
+            </section>
+        </div>
+
+        <footer class="booking-detail-card__foot">
+            @if (!Model.IsDemoPaid)
+            {
+                <a asp-action="MockPayment" asp-route-id="@Model.Id" class="btn btn--primary">Thanh toán (demo)</a>
+            }
+            @if (Model.IsDemoPaid)
+            {
+                <a asp-action="Ticket" asp-route-id="@Model.Id" class="btn btn--ghost">Vé &amp; QR</a>
+            }
+            else
+            {
+                <a asp-action="Confirmation" asp-route-id="@Model.Id" class="btn btn--ghost">Trang xác nhận &amp; QR thanh toán</a>
+            }
+            <a asp-action="MyOrders" class="btn btn--ghost booking-detail-back">← Quay lại danh sách</a>
+            @if (Model.Status != BookingStatus.Cancelled && Model.Status != BookingStatus.Completed)
+            {
+                <form asp-action="Cancel" method="post" style="display:inline-block;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button type="submit" class="btn btn--ghost">Hủy đơn</button>
+                </form>
+            }
+            <a asp-area="" asp-controller="Tours" asp-action="Details" asp-route-id="@Model.TourId" class="btn btn--primary">Xem tour</a>
+        </footer>
+    </article>
+
+    @if (!Model.IsDemoPaid && !string.IsNullOrEmpty(payQr))
+    {
+        <div class="booking-detail-ticket-below">
+            <div class="demo-pay-qr-block">
+                <h2 class="demo-pay-qr-block__title">Quét mã để thanh toán trên điện thoại</h2>
+                <p class="demo-pay-qr-block__hint">Điện thoại cần mở được cùng địa chỉ máy chủ (ví dụ IP máy tính trong mạng LAN, không dùng <code>localhost</code> trên điện thoại).</p>
+                <div class="demo-pay-qr-block__img-wrap">
+                    <img src="@payQr" alt="Mã QR thanh toán demo" class="demo-pay-qr-block__img" width="200" height="200" />
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (card != null)
+    {
+        <div class="booking-detail-ticket-below">
+            @await Html.PartialAsync("_BookingTicketCard", card)
+        </div>
+    }
+</div>
+
+@if (!Model.IsDemoPaid)
+{
+    <script>
+        (function () {
+            var url = '@Url.Action("DemoPaymentStatus", "Bookings", new { id = Model.Id })';
+            var t = setInterval(function () {
+                fetch(url, { credentials: 'same-origin', headers: { 'Accept': 'application/json' } })
+                    .then(function (r) { return r.ok ? r.json() : null; })
+                    .then(function (d) {
+                        if (d && d.isDemoPaid) {
+                            clearInterval(t);
+                            location.reload();
+                        }
+                    })
+                    .catch(function () { });
+            }, 2000);
+        })();
+    </script>
+}

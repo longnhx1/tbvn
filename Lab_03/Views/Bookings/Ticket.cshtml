@@ -1,0 +1,25 @@
+@model Lab_03.Models.Booking
+@{
+    ViewData["Title"] = $"Vé điện tử #{Model.Id}";
+    var card = ViewData["TicketCard"] as Lab_03.Models.ViewModels.BookingTicketCardModel;
+}
+
+<div class="booking-page">
+    <nav class="tour-detail__breadcrumb" aria-label="Breadcrumb" style="max-width:720px;margin:0 auto 1rem;padding:0 1rem;">
+        <a asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
+        <span aria-hidden="true">/</span>
+        <a asp-action="MyOrders">Tour đã đặt</a>
+        <span aria-hidden="true">/</span>
+        <span>Vé #@Model.Id</span>
+    </nav>
+
+    @if (card != null)
+    {
+        @await Html.PartialAsync("_BookingTicketCard", card)
+    }
+
+    <div class="e-ticket__footer-actions">
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn--ghost">Chi tiết đặt chỗ</a>
+        <a asp-action="MyOrders" class="btn btn--primary">Danh sách đặt tour</a>
+    </div>
+</div>

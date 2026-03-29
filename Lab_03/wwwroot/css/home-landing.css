@@ -1,0 +1,282 @@
+/* =========================================================
+   THÊM MÀU NỀN CHO CÁC SECTION BÊN DƯỚI
+   ========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
+:root {
+    /* Colors */
+    --primary-color: #0ea5e9; /* Ocean Blue */
+    --primary-hover: #0284c7;
+    --accent-color: #f97316;  /* Sunset Orange */
+    --accent-hover: #ea580c;
+    --text-dark: #0f172a;
+    --text-muted: #64748b;
+    --bg-main: #ffffff;
+    --bg-gray: #f8fafc;
+    --card-bg: #ffffff;
+    --danger: #ef4444;
+    
+    /* Shadows & Radii */
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 10px 25px -3px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 20px 40px -5px rgba(14, 165, 233, 0.15); /* Tinted shadow */
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-pill: 999px;
+    
+    /* Transitions */
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Quicksand', sans-serif;
+    color: var(--text-dark);
+    background-color: var(--bg-main);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+}
+.section:nth-of-type(2) {
+    background-color: #f0f9ff; /* Xanh da trời nhạt */
+    border-radius: 40px;
+}
+
+.section:nth-of-type(4) {
+    background-color: #e0f2fe; /* Xanh đậm hơn một chút */
+    border-radius: 40px;
+}
+
+:root {
+    /* Colors */
+    --primary-color: #0ea5e9; /* Ocean Blue */
+    --primary-hover: #0284c7;
+    --accent-color: #f97316; /* Sunset Orange */
+    --accent-hover: #ea580c;
+    --text-dark: #0f172a;
+    --text-muted: #64748b;
+    --bg-main: #ffffff;
+    --bg-gray: #f8fafc;
+    --card-bg: #ffffff;
+    --danger: #ef4444;
+    /* Shadows & Radii */
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 10px 25px -3px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 20px 40px -5px rgba(14, 165, 233, 0.15); /* Tinted shadow */
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-pill: 999px;
+    /* Transitions */
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+}
+
+/* Legacy two-column hero only — tránh ghi đè .hero--travel (tours-bookings.css) */
+.hero:not(.hero--travel) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 85vh;
+    padding: 5% 8%;
+    background: radial-gradient(circle at top left, #e0f2fe 0%, #ffffff 70%);
+    gap: 40px;
+}
+
+.hero:not(.hero--travel) .hero__content {
+    flex: 1;
+    max-width: 600px;
+    animation: fadeUp 0.8s ease-out forwards;
+}
+
+.hero:not(.hero--travel) .hero__tag {
+    display: inline-block;
+    padding: 6px 16px;
+    background: rgba(14, 165, 233, 0.1);
+    color: var(--primary-color);
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.hero:not(.hero--travel) .hero__title {
+    font-size: 4.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, var(--text-dark) 0%, var(--primary-color) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero:not(.hero--travel) .hero__subtitle {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+}
+
+.hero:not(.hero--travel) .hero__actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.hero:not(.hero--travel) .hero__visual {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.hero:not(.hero--travel) .hero__visual::before {
+    content: '';
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.15;
+    z-index: 0;
+}
+
+.hero:not(.hero--travel) .hero__phone-mockup {
+    position: relative;
+    z-index: 1;
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    transform: rotate(3deg);
+    transition: var(--transition);
+    border: 8px solid white;
+}
+
+.hero:not(.hero--travel) .hero__phone-mockup:hover {
+    transform: rotate(0deg) scale(1.02);
+}
+
+.hero:not(.hero--travel) .hero__phone-mockup img {
+    width: 100%;
+    max-width: 380px;
+    height: 550px;
+    object-fit: cover;
+    border-radius: 22px;
+}
+
+/* =========================================================
+   LÀM TRÀN VIỀN: ĐỊA ĐIỂM NỔI BẬT (TICKET CARD)
+   ========================================================= */
+.ticket-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 0; /* Xóa padding để ảnh tràn ra tận mép */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Quan trọng: Cắt các góc ảnh bị lồi ra khỏi viền bo tròn */
+}
+
+    .ticket-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.08);
+    }
+
+.ticket-card__image-wrap {
+    position: relative;
+    padding-top: 75%; /* Chỉnh tỷ lệ khung hình ảnh (thấp hơn 100% để ảnh đỡ bị vuông) */
+}
+
+    .ticket-card__image-wrap img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+.ticket-card:hover .ticket-card__image-wrap img {
+    transform: scale(1.1);
+}
+
+.ticket-card__body {
+    padding: 20px; /* Bù lại khoảng cách cho phần chữ bên dưới ảnh */
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+/* =========================================================
+   LÀM TRÀN VIỀN: THỊNH HÀNH NHẤT (BESTSELLER CARD)
+   ========================================================= */
+.bestseller-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 0; /* Xóa padding để ảnh tràn ra mép trái */
+    display: flex;
+    align-items: stretch; /* Kéo giãn ảnh bằng chiều cao của card */
+    gap: 0; /* Xóa khoảng cách mặc định */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+    .bestseller-card:hover {
+        box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.08);
+        transform: translateX(10px);
+    }
+
+.bestseller-card__image-link {
+    width: 140px; /* Độ rộng của ảnh bên trái */
+    border-radius: 0; /* Bỏ bo tròn riêng của ảnh vì đã có overflow: hidden của card lo */
+    flex-shrink: 0;
+}
+
+    .bestseller-card__image-link img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: all 0.3s ease;
+    }
+
+.bestseller-card:hover .bestseller-card__image-link img {
+    transform: scale(1.1);
+}
+
+.bestseller-card__info {
+    flex: 1;
+    padding: 20px; /* Thêm padding cho phần thông tin */
+}
+
+.bestseller-card__right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+    padding: 20px 20px 20px 0; /* Padding cho phần giá và nút */
+}

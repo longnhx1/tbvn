@@ -1,0 +1,129 @@
+@model Lab_03.Models.Booking
+@using Lab_03.Models
+@using Lab_03.Models.ViewModels
+@{
+    ViewData["Title"] = "Đặt tour thành công";
+    var card = ViewData["TicketCard"] as BookingTicketCardModel;
+    var payQr = ViewData["DemoPayQrDataUrl"] as string;
+    var currentDueAmount = ViewData["CurrentDueAmount"] as decimal?;
+    var currentDueLabel = ViewData["CurrentDueLabel"] as string;
+}
+
+<div class="booking-page">
+    <div class="booking-page booking-page--center" style="padding-bottom:0;">
+        <div class="booking-success">
+            <div class="booking-success__icon" aria-hidden="true">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h1 class="booking-success__title">Đặt tour thành công</h1>
+            <p class="booking-success__lead">Cảm ơn bạn! Chúng tôi đã ghi nhận yêu cầu của bạn. <span class="booking-demo-inline">(Đồ án: luồng thanh toán chỉ mô phỏng.)</span></p>
+            @if (!Model.IsDemoPaid)
+            {
+                <p class="booking-success__lead booking-success__lead--pay">Vui lòng hoàn tất <strong>thanh toán demo</strong> để nhận vé điện tử — quét mã bên dưới bằng điện thoại hoặc dùng nút thanh toán trên máy tính.</p>
+            }
+
+            @if (TempData["SuccessMessage"] is string okMsg)
+            {
+                <div class="booking-flash booking-flash--ok" role="status">@okMsg</div>
+            }
+            @if (TempData["ErrorMessage"] is string errMsg)
+            {
+                <div class="booking-flash booking-flash--err" role="alert">@errMsg</div>
+            }
+            @if (TempData["InfoMessage"] is string infoMsg)
+            {
+                <div class="booking-flash booking-flash--info" role="status">@infoMsg</div>
+            }
+
+            <div class="booking-success__card">
+                <p><span class="booking-success__label">Mã đặt chỗ</span><strong class="booking-success__value">#@Model.Id</strong></p>
+                <p><span class="booking-success__label">Tour</span><strong class="booking-success__value">@Model.Tour?.Name</strong></p>
+                <p><span class="booking-success__label">Tổng (ước tính thanh toán)</span><strong class="booking-success__value">@Model.TotalPrice.ToString("N0") đ</strong></p>
+                <p><span class="booking-success__label">Trạng thái tour</span><span class="booking-order-card__status booking-order-card__status--@Model.Status.ToString().ToLowerInvariant()">@BookingStatusDisplay.ToVietnamese(Model.Status)</span></p>
+                <p>
+                    <span class="booking-success__label">Thanh toán demo</span>
+                    @if (Model.IsDemoPaid)
+                    {
+                        <span class="booking-order-card__status booking-order-card__status--confirmed">Đã hoàn tất</span>
+                        @if (!string.IsNullOrEmpty(Model.DemoPaymentRef))
+                        {
+                            <span class="booking-success__ref">@Model.DemoPaymentRef</span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="booking-order-card__status booking-order-card__status--pending">Chưa hoàn tất</span>
+                    }
+                </p>
+
+                @if (!Model.IsDemoPaid && currentDueAmount is { } amt)
+                {
+                    <p style="margin-top:0.5rem;">
+                        <span class="booking-success__label">Kỳ tiếp theo</span>
+                        <span class="booking-order-card__status booking-order-card__status--pending">
+                            @(currentDueLabel ?? "Thanh toán") — @amt.ToString("N0") đ
+                        </span>
+                    </p>
+                }
+            </div>
+
+            <p class="booking-success__hint">Đơn giá một người lớn tại thời điểm đặt: <strong>@Model.UnitPrice.ToString("N0") đ</strong>.</p>
+
+            @if (!Model.IsDemoPaid && !string.IsNullOrEmpty(payQr))
+            {
+                <div class="demo-pay-qr-block">
+                    <h2 class="demo-pay-qr-block__title">Quét mã để thanh toán trên điện thoại</h2>
+                    <p class="demo-pay-qr-block__hint">Điện thoại cần mở được cùng địa chỉ máy chủ (ví dụ IP máy tính trong mạng LAN, không dùng <code>localhost</code> trên điện thoại).</p>
+                    <div class="demo-pay-qr-block__img-wrap">
+                        <img src="@payQr" alt="Mã QR thanh toán demo" class="demo-pay-qr-block__img" width="200" height="200" />
+                    </div>
+                    <p class="demo-pay-qr-block__sub">Trang điện thoại chỉ có một nút <strong>Thanh toán</strong> (demo).</p>
+                </div>
+            }
+
+            <div class="booking-success__actions booking-success__actions--stack">
+                @if (!Model.IsDemoPaid)
+                {
+                    <a asp-action="MockPayment" asp-route-id="@Model.Id" class="btn btn--primary">
+                        <i class="fa-solid fa-credit-card" aria-hidden="true"></i> Thanh toán (demo)
+                    </a>
+                }
+                @if (Model.IsDemoPaid)
+                {
+                    <a asp-action="Ticket" asp-route-id="@Model.Id" class="btn btn--ghost booking-success__secondary">
+                        <i class="fa-solid fa-qrcode" aria-hidden="true"></i> Xem vé &amp; QR
+                    </a>
+                }
+                <a asp-action="MyOrders" class="btn btn--ghost booking-success__secondary">Tour đã đặt</a>
+                <a asp-area="" asp-controller="Tours" asp-action="Index" class="btn btn--ghost booking-success__secondary">Tiếp tục xem tour</a>
+            </div>
+        </div>
+    </div>
+
+    @if (card != null)
+    {
+        <div class="booking-page confirmation-ticket-wrap">
+            @await Html.PartialAsync("_BookingTicketCard", card)
+        </div>
+    }
+</div>
+
+@if (!Model.IsDemoPaid)
+{
+    <script>
+        (function () {
+            var url = '@Url.Action("DemoPaymentStatus", "Bookings", new { id = Model.Id })';
+            var t = setInterval(function () {
+                fetch(url, { credentials: 'same-origin', headers: { 'Accept': 'application/json' } })
+                    .then(function (r) { return r.ok ? r.json() : null; })
+                    .then(function (d) {
+                        if (d && d.isDemoPaid) {
+                            clearInterval(t);
+                            location.reload();
+                        }
+                    })
+                    .catch(function () { });
+            }, 2000);
+        })();
+    </script>
+}

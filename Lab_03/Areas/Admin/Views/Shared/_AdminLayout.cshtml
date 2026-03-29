@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html lang="vi">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="description" content="Admin – Travel Booking Việt Nam" />
+
+    <title>@ViewData["Title"] – Travel Admin</title>
+
+
+
+    <!-- Fonts -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+
+
+    <!-- Icons -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+
+
+    <!-- Stylesheets -->
+
+    <link rel="stylesheet" href="~/css/admin-layout.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="~/css/admin-dashboard.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="~/css/admin-pages.css" asp-append-version="true" />
+
+
+
+    @await RenderSectionAsync("Styles", required: false)
+
+</head>
+
+<body class="admin-body">
+
+
+
+    <!-- =========== ADMIN HEADER =========== -->
+
+    <header class="admin-header">
+
+        <div class="admin-header__inner">
+
+            <div class="admin-header__left">
+
+                <button class="admin-sidebar-toggle" id="sidebarToggleBtn" aria-label="Bật/tắt sidebar" aria-expanded="true">
+
+                    <i class="fa-solid fa-bars"></i>
+
+                </button>
+
+                <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="admin-header__logo">
+
+                    <i class="fa-solid fa-plane-departure"></i>
+
+                    <span>Travel Admin</span>
+
+                </a>
+
+            </div>
+
+            <div class="admin-header__right">
+
+                <a class="admin-header__action-btn" asp-area="Admin" asp-controller="Booking" asp-action="Index" asp-route-status="pending" aria-label="Đặt chỗ chờ xác nhận" title="Đặt chỗ chờ xác nhận">
+
+                    <i class="fa-solid fa-bell"></i>
+
+                </a>
+
+                <a class="admin-header__action-btn" asp-area="" asp-controller="Home" asp-action="Index" title="Về website" aria-label="Về website khách hàng">
+
+                    <i class="fa-solid fa-globe"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =========== MAIN LAYOUT =========== -->
+
+    <div class="admin-layout">
+
+
+
+        <!-- =========== SIDEBAR =========== -->
+
+        <aside class="admin-sidebar" id="adminSidebar" aria-label="Menu điều hướng">
+
+            <nav class="admin-nav">
+
+                <ul class="admin-nav__list">
+
+
+
+                    <li class="admin-nav__item">
+
+                        <a class="admin-nav__link" asp-area="Admin" asp-controller="Home" asp-action="Index">
+
+                            <i class="fa-solid fa-house-chimney"></i>
+
+                            <span>Dashboard</span>
+
+                        </a>
+
+                    </li>
+
+
+
+                    <li class="admin-nav__item">
+
+                        <button type="button" class="admin-nav__link admin-nav__parent" data-submenu="tours" aria-expanded="false">
+
+                            <i class="fa-solid fa-route"></i>
+
+                            <span>Tour</span>
+
+                            <i class="fa-solid fa-chevron-down admin-nav__chevron"></i>
+
+                        </button>
+
+                        <ul class="admin-nav__submenu" id="submenu-tours" aria-hidden="true">
+
+                            <li><a asp-area="Admin" asp-controller="Tour" asp-action="Index" class="admin-nav__sublink">Danh sách tour</a></li>
+
+                            <li><a asp-area="Admin" asp-controller="Tour" asp-action="Add" class="admin-nav__sublink">Thêm tour</a></li>
+
+                            <li><a asp-area="Admin" asp-controller="Destination" asp-action="Index" class="admin-nav__sublink">Điểm đến</a></li>
+
+                        </ul>
+
+                    </li>
+
+
+
+                    <li class="admin-nav__item">
+
+                        <button type="button" class="admin-nav__link admin-nav__parent" data-submenu="bookings" aria-expanded="false">
+
+                            <i class="fa-solid fa-ticket"></i>
+
+                            <span>Đặt chỗ</span>
+
+                            <i class="fa-solid fa-chevron-down admin-nav__chevron"></i>
+
+                        </button>
+
+                        <ul class="admin-nav__submenu" id="submenu-bookings" aria-hidden="true">
+
+                            <li><a asp-area="Admin" asp-controller="Booking" asp-action="Index" class="admin-nav__sublink">Tất cả</a></li>
+
+                            <li><a asp-area="Admin" asp-controller="Booking" asp-action="Index" asp-route-status="pending" class="admin-nav__sublink">Chờ xác nhận</a></li>
+
+                            <li><a asp-area="Admin" asp-controller="Booking" asp-action="Index" asp-route-status="confirmed" class="admin-nav__sublink">Đã xác nhận</a></li>
+
+                            <li><a asp-area="Admin" asp-controller="Booking" asp-action="Index" asp-route-status="cancelled" class="admin-nav__sublink">Đã hủy</a></li>
+
+                        </ul>
+
+                    </li>
+
+
+
+                    <li class="admin-nav__item">
+
+                        <a class="admin-nav__link" asp-area="Admin" asp-controller="Users" asp-action="Index">
+
+                            <i class="fa-solid fa-users-gear"></i>
+
+                            <span>Người dùng</span>
+
+                        </a>
+
+                    </li>
+
+
+
+                    <li class="admin-nav__item">
+
+                        <button type="button" class="admin-nav__link admin-nav__parent" data-submenu="reports" aria-expanded="false">
+
+                            <i class="fa-solid fa-chart-bar"></i>
+
+                            <span>Báo cáo</span>
+
+                            <i class="fa-solid fa-chevron-down admin-nav__chevron"></i>
+
+                        </button>
+
+                        <ul class="admin-nav__submenu" id="submenu-reports" aria-hidden="true">
+
+                            <li><a asp-area="Admin" asp-controller="Reports" asp-action="Index" class="admin-nav__sublink">Tổng quan</a></li>
+
+                        </ul>
+
+                    </li>
+
+
+
+                    <li class="admin-nav__item">
+
+                        <a class="admin-nav__link" asp-area="Admin" asp-controller="Settings" asp-action="Index">
+
+                            <i class="fa-solid fa-gear"></i>
+
+                            <span>Cài đặt</span>
+
+                        </a>
+
+                    </li>
+
+
+
+                </ul>
+
+            </nav>
+
+        </aside>
+
+
+
+        <!-- =========== MAIN CONTENT =========== -->
+
+        <main class="admin-main">
+
+            <div class="admin-container">
+
+                @RenderBody()
+
+            </div>
+
+        </main>
+
+
+
+    </div>
+
+
+
+    <!-- Scripts -->
+
+    <script src="~/js/admin-layout.js" asp-append-version="true"></script>
+
+    <script src="~/js/admin-dashboard.js" asp-append-version="true"></script>
+
+
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+
+
+</body>
+
+</html>
+

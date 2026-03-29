@@ -1,0 +1,66 @@
+@model IEnumerable<Lab_03.Models.Booking>
+@using Lab_03.Models
+@{
+    ViewData["Title"] = "Lịch sử đặt tour";
+}
+
+<div class="booking-page">
+    <header class="booking-page__intro booking-page__intro--row">
+        <div>
+            <h1 class="booking-page__title">Tour đã đặt</h1>
+            <p class="booking-page__subtitle">Theo dõi trạng thái và chi tiết từng mã đặt chỗ.</p>
+        </div>
+        <a asp-area="" asp-controller="Tours" asp-action="Index" class="btn btn--primary">
+            <i class="fa-solid fa-map" aria-hidden="true"></i> Đặt thêm tour
+        </a>
+    </header>
+
+    @if (!Model.Any())
+    {
+        <div class="booking-empty">
+            <i class="fa-solid fa-suitcase-rolling" aria-hidden="true"></i>
+            <p><strong>Bạn chưa có đặt chỗ nào.</strong></p>
+            <a asp-area="" asp-controller="Tours" asp-action="Index" class="btn btn--primary">Xem danh sách tour</a>
+        </div>
+    }
+    else
+    {
+        <div class="booking-orders">
+            @foreach (var booking in Model)
+            {
+                <article class="booking-order-card">
+                    <div class="booking-order-card__top">
+                        <span class="booking-order-card__id">#@booking.Id</span>
+                        <span class="booking-order-card__status booking-order-card__status--@booking.Status.ToString().ToLowerInvariant()">
+                            @BookingStatusDisplay.ToVietnamese(booking.Status)
+                        </span>
+                    </div>
+                    <h2 class="booking-order-card__tour">@(booking.Tour?.Name ?? "Tour")</h2>
+                    <ul class="booking-order-card__meta">
+                        <li><i class="fa-regular fa-calendar" aria-hidden="true"></i> @booking.TravelDate.ToString("dd/MM/yyyy")</li>
+                        <li><i class="fa-solid fa-users" aria-hidden="true"></i> @booking.Adults người lớn, @booking.Children trẻ em</li>
+                        <li><i class="fa-solid fa-coins" aria-hidden="true"></i> Tổng <strong>@booking.TotalPrice.ToString("N0") đ</strong></li>
+                        <li>
+                            @if (booking.IsDemoPaid)
+                            {
+                                <span class="e-ticket-badge e-ticket-badge--paid"><i class="fa-solid fa-wallet" aria-hidden="true"></i> Đã thanh toán (bản demo)</span>
+                            }
+                            else
+                            {
+                                <span class="e-ticket-badge e-ticket-badge--unpaid"><i class="fa-regular fa-clock" aria-hidden="true"></i> Chưa thanh toán (demo)</span>
+                            }
+                        </li>
+                        @if (booking.Status == BookingStatus.Cancelled && booking.RefundAmount.HasValue)
+                        {
+                            <li>
+                                <i class="fa-solid fa-arrow-rotate-left" aria-hidden="true"></i>
+                                Hoàn <strong>@booking.RefundAmount.Value.ToString("N0") đ</strong>
+                            </li>
+                        }
+                    </ul>
+                    <a asp-action="Details" asp-route-id="@booking.Id" class="booking-order-card__link">Chi tiết đặt chỗ</a>
+                </article>
+            }
+        </div>
+    }
+</div>

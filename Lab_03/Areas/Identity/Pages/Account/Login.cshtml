@@ -1,0 +1,123 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Đăng nhập";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/auth.css" />
+
+<div class="auth-container">
+    <div class="auth-card">
+        <!-- Left Side - Form -->
+        <div class="auth-form-section">
+            <div class="auth-header">
+                <a href="/" class="auth-logo">
+                    <span class="brand-icon">L</span>
+                    <span class="brand-text">Local Travel</span>
+                </a>
+                <h1 class="auth-title">Chào mừng trở lại!</h1>
+                <p class="auth-subtitle">Đăng nhập để tiếp tục hành trình</p>
+            </div>
+
+            <form id="account" method="post" class="auth-form">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                <div class="form-group">
+                    <label asp-for="Input.Email" class="form-label">Email</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">&#9993;</span>
+                        <input asp-for="Input.Email" class="form-control" autocomplete="username"
+                               aria-required="true" placeholder="name@example.com" />
+                    </div>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Input.Password" class="form-label">Mật khẩu</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">&#128274;</span>
+                        <input asp-for="Input.Password" class="form-control" autocomplete="current-password"
+                               aria-required="true" placeholder="Nhập mật khẩu" type="password" id="passwordInput" />
+                        <button type="button" class="toggle-password" onclick="togglePassword('passwordInput', this)">
+                            <span class="eye-icon">&#128065;</span>
+                        </button>
+                    </div>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+
+                <div class="form-options">
+                    <label class="checkbox-wrapper">
+                        <input class="form-check-input" asp-for="Input.RememberMe" />
+                        <span class="checkmark"></span>
+                        <span>Ghi nhớ đăng nhập</span>
+                    </label>
+                    <a asp-page="./ForgotPassword" class="forgot-link">Quên mật khẩu?</a>
+                </div>
+
+                <button type="submit" class="btn-auth btn-primary-auth">
+                    <span>Đăng nhập</span>
+                    <span class="btn-icon">&#10140;</span>
+                </button>
+            </form>
+
+            <div class="auth-divider">
+                <span>Hoặc đăng nhập với</span>
+            </div>
+
+            <div class="social-login">
+                @if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                {
+                    <button type="button" class="btn-social btn-google" disabled>
+                        <span class="social-icon">G</span>
+                        <span>Google</span>
+                    </button>
+                    <button type="button" class="btn-social btn-facebook" disabled>
+                        <span class="social-icon">f</span>
+                        <span>Facebook</span>
+                    </button>
+                }
+                else
+                {
+                    <form asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        @foreach (var provider in Model.ExternalLogins!)
+                        {
+                            <button type="submit" class="btn-social" name="provider" value="@provider.Name">
+                                <span>@provider.DisplayName</span>
+                            </button>
+                        }
+                    </form>
+                }
+            </div>
+
+            <div class="auth-footer">
+                <p>Chưa có tài khoản? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Đăng ký ngay</a></p>
+            </div>
+        </div>
+
+        <!-- Right Side - Brand -->
+        <div class="auth-brand-section">
+            <div class="brand-content">
+                <div class="brand-illustration">
+                    <div class="circle circle-1"></div>
+                    <div class="circle circle-2"></div>
+                    <div class="circle circle-3"></div>
+                    <div class="shopping-icon">&#127757;</div>
+                </div>
+                <h2>Du lịch mọi lúc</h2>
+                <p>Khám phá hàng ngàn chuyến đi chất lượng với giá cả phải chăng.</p>
+                <ul class="brand-features">
+                    <li><span class="check">&#10003;</span> Làm việc nhanh chóng</li>
+                    <li><span class="check">&#10003;</span> Nhân viên thân thiện</li>
+                    <li><span class="check">&#10003;</span> Hỗ trợ 24/7</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/auth.js"></script>
+}

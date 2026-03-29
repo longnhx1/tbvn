@@ -1,0 +1,18 @@
+@model Lab_03.Models.Booking
+@{
+    ViewData["Title"] = "Đã thanh toán (demo)";
+    Layout = "_Layout";
+}
+
+<div class="booking-page pay-demo-mobile">
+    <div class="pay-demo-mobile__card pay-demo-mobile__card--narrow">
+        <div class="pay-demo-mobile__ok" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></div>
+        <h1 class="pay-demo-mobile__title">Thanh toán demo thành công</h1>
+        <p class="pay-demo-mobile__lead">Mã đặt chỗ <strong>#@Model.Id</strong> — @(Model.Tour?.Name ?? "Tour")</p>
+        @if (!string.IsNullOrEmpty(Model.DemoPaymentRef))
+        {
+            <p class="pay-demo-mobile__ref">Mã GD demo: @Model.DemoPaymentRef</p>
+        }
+        <p class="pay-demo-mobile__hint">Bạn có thể đóng trang này. Trên máy tính, tab xác nhận sẽ tự cập nhật vé điện tử.</p>
+    </div>
+</div>

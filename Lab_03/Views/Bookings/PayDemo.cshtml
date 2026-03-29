@@ -1,0 +1,24 @@
+@model Lab_03.Models.Booking
+@{
+    ViewData["Title"] = "Thanh toán demo";
+    Layout = "_Layout";
+    var dueAmount = ViewData["DueAmount"] as decimal? ?? Model.TotalPrice;
+    var dueLabel = ViewData["DueLabel"] as string ?? "Thanh toán";
+}
+
+<div class="booking-page pay-demo-mobile">
+    <div class="pay-demo-mobile__card">
+        <span class="pay-demo-mobile__badge">Demo — không thu tiền thật</span>
+        <h1 class="pay-demo-mobile__title">Thanh toán đặt tour</h1>
+        <dl class="pay-demo-mobile__dl">
+            <div><dt>Mã đặt chỗ</dt><dd>#@Model.Id</dd></div>
+            <div><dt>Tour</dt><dd>@(Model.Tour?.Name ?? "-")</dd></div>
+            <div><dt>@dueLabel</dt><dd class="pay-demo-mobile__amount">@dueAmount.ToString("N0") đ</dd></div>
+        </dl>
+        <form asp-action="PayDemo" method="post" class="pay-demo-mobile__form">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="token" value="@Model.DemoPayToken" />
+            <button type="submit" class="btn btn--primary pay-demo-mobile__btn">Thanh toán</button>
+        </form>
+    </div>
+</div>

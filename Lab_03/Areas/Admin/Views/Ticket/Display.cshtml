@@ -1,0 +1,130 @@
+﻿@model Lab_03.Models.Tour
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+<!-- NOTE: Removed accidental hard-coded link (dev machine path) -->
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-tour-display.css" asp-append-version="true" />
+}
+
+<div class="ticket-display-page">
+    <!-- Page Header -->
+    <header class="ticket-display-header">
+        <div class="ticket-display-header__left">
+            <a asp-area="Admin" asp-controller="Tour" asp-action="Index" class="ticket-display-header__back" title="Quay lại">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <nav class="ticket-display-header__breadcrumb">
+                <a asp-area="Admin" asp-controller="Tour" asp-action="Index">tour</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                <span>@Model.Name</span>
+            </nav>
+        </div>
+        <div class="ticket-display-header__actions">
+            <a asp-area="Admin" asp-controller="Tour" asp-action="Update" asp-route-id="@Model.Id" class="btn-secondary">
+                <i class="fa-solid fa-pen-to-square"></i>
+                <span>Chỉnh sửa</span>
+            </a>
+            <a asp-area="Admin" asp-controller="Tour" asp-action="Delete" asp-route-id="@Model.Id" class="btn-danger">
+                <i class="fa-solid fa-trash-can"></i>
+                <span>Xóa</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Ticket Content -->
+    <div class="ticket-display__grid">
+        <!-- Image Section -->
+        <div class="ticket-display__image-card">
+            <div class="ticket-image-wrapper">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" alt="@Model.Name" class="ticket-image" id="productImage" />
+                    <button type="button" class="image-zoom-btn" id="zoomImageBtn" title="Phóng to">
+                        <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    </button>
+                }
+                else
+                {
+                    <div class="ticket-no-image">
+                        <i class="fa-solid fa-image"></i>
+                        <p>Chưa có hình ảnh</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="ticket-display__info">
+            <!-- Basic Info Card -->
+            <div class="info-card">
+                <div class="info-card__header">
+                    <span class="info-card__badge">
+                        @(Model.Destination?.Name ?? "Chưa phân loại")
+                    </span>
+                    <span class="info-card__id">ID: #@Model.Id</span>
+                </div>
+                <h1 class="info-card__title">@Model.Name</h1>
+                <div class="info-card__price">
+                    <span class="price-label">Giá bán:</span>
+                    <span class="price-value">@Model.Price.ToString("N0") VND</span>
+                </div>
+            </div>
+
+            <!-- Description Card -->
+            <div class="info-card">
+                <div class="info-card__section">
+                    <h3 class="info-card__section-title">
+                        <i class="fa-solid fa-align-left"></i>
+                        Mô tả tour
+                    </h3>
+                    <div class="info-card__description">
+                        @if (!string.IsNullOrEmpty(Model.Description))
+                        {
+                            <p>@Model.Description</p>
+                        }
+                        else
+                        {
+                            <p class="text-muted">Chưa có mô tả cho tour này.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div class="info-card info-card--actions">
+                <h3 class="info-card__section-title">
+                    <i class="fa-solid fa-bolt"></i>
+                    Thao tác nhanh
+                </h3>
+                <div class="quick-actions">
+                    <a asp-area="Admin" asp-controller="Tour" asp-action="Update" asp-route-id="@Model.Id" class="quick-action-btn">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                        <span>Chỉnh sửa thông tin</span>
+                    </a>
+                    <button type="button" class="quick-action-btn" id="copyLinkBtn" data-url="@Url.Action("Display", "Tour", new { area = "Admin", id = Model.Id })">
+                        <i class="fa-solid fa-link"></i>
+                        <span>Sao chép liên kết</span>
+                    </button>
+                    <a asp-area="Admin" asp-controller="Tour" asp-action="Index" class="quick-action-btn">
+                        <i class="fa-solid fa-list"></i>
+                        <span>Xem danh sách</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Image Lightbox -->
+<div class="lightbox" id="imageLightbox">
+    <button type="button" class="lightbox__close" id="closeLightbox">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+    <img src="@Model.ImageUrl" alt="@Model.Name" class="lightbox__image" />
+</div>
+
+@section Scripts {
+    <script src="~/js/admin-tour-display.js" asp-append-version="true"></script>
+}

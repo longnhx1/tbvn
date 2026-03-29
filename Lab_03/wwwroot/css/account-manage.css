@@ -1,0 +1,227 @@
+.account-manage {
+    max-width: 1100px;
+    margin: 2rem auto 3.5rem;
+    padding: 0 1.25rem;
+}
+
+.account-manage__header {
+    background: linear-gradient(120deg, #e8f4f5 0%, #f6f2ea 100%);
+    border: 1px solid rgba(10, 110, 120, 0.15);
+    border-radius: 18px;
+    padding: 1.5rem 1.65rem;
+    margin-bottom: 1.5rem;
+}
+
+.account-manage__eyebrow {
+    margin: 0;
+    color: #0a6e78;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.account-manage__title {
+    margin: 0.35rem 0;
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: #064e55;
+    letter-spacing: -0.02em;
+}
+
+.account-manage__subtitle {
+    margin: 0;
+    color: #5a7a80;
+    line-height: 1.55;
+    max-width: 52ch;
+}
+
+.account-manage__content {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 1.25rem;
+    align-items: start;
+}
+
+.account-manage__sidebar,
+.account-manage__main {
+    background: #ffffff;
+    border: 1px solid rgba(10, 110, 120, 0.12);
+    border-radius: 16px;
+    box-shadow: 0 8px 28px rgba(6, 45, 50, 0.05);
+}
+
+.account-manage__sidebar {
+    padding: 0.75rem;
+    position: sticky;
+    top: 96px;
+}
+
+.account-manage__main {
+    padding: 1.25rem;
+}
+
+.manage-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.manage-nav__icon {
+    display: inline-flex;
+    width: 1.5rem;
+    justify-content: center;
+    color: #0a6e78;
+    opacity: 0.9;
+}
+
+.manage-nav__link {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: #1a2e32;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 0.72rem 0.85rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.manage-nav__link:hover {
+    background: #e8f4f5;
+    border-color: rgba(10, 110, 120, 0.12);
+}
+
+.manage-nav__link.active {
+    color: #064e55;
+    background: #e8f4f5;
+    border-color: rgba(10, 110, 120, 0.25);
+}
+
+.manage-card {
+    padding: 0;
+}
+
+.manage-card__head {
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid rgba(10, 110, 120, 0.08);
+    margin-bottom: 1rem;
+}
+
+.manage-card__head h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #111827;
+}
+
+.manage-card__head p {
+    margin: 0.35rem 0 1rem;
+    color: #6b7280;
+}
+
+.manage-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.manage-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.manage-field__label {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.manage-field__input {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.95rem;
+}
+
+.manage-field__input:focus {
+    outline: none;
+    border-color: #0a6e78;
+    box-shadow: 0 0 0 3px rgba(10, 110, 120, 0.12);
+}
+
+.manage-field__input[disabled] {
+    background: #f3f4f6;
+}
+
+.manage-validation,
+.manage-field__error {
+    color: #dc2626;
+    font-size: 0.9rem;
+}
+
+.manage-btn {
+    width: fit-content;
+    border: none;
+    border-radius: 12px;
+    padding: 0.75rem 1.25rem;
+    background: #0a6e78;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.manage-btn:hover {
+    background: #064e55;
+}
+
+.manage-inline {
+    display: flex;
+    gap: 0.65rem;
+    align-items: center;
+}
+
+.manage-badge {
+    border-radius: 999px;
+    background: #dcfce7;
+    color: #166534;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.32rem 0.6rem;
+    white-space: nowrap;
+}
+
+.manage-link-btn {
+    width: fit-content;
+    border: none;
+    background: transparent;
+    padding: 0;
+    color: #0a6e78;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.manage-link-btn:hover {
+    color: #064e55;
+    text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+    .account-manage__content {
+        grid-template-columns: 1fr;
+    }
+
+    .account-manage__sidebar {
+        position: static;
+    }
+
+    .account-manage__main {
+        padding: 1rem;
+    }
+
+    .manage-btn {
+        width: 100%;
+    }
+}

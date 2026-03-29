@@ -1,0 +1,107 @@
+@model IEnumerable<Lab_03.Models.Booking>
+@using Lab_03.Models
+@{
+    ViewData["Title"] = "Quản lý đặt chỗ";
+    var currentFilter = ViewBag.CurrentStatus as string;
+}
+
+<div class="admin-page">
+    <header class="admin-page__header">
+        <div class="admin-page__header-main">
+            <p class="admin-page__eyebrow"><i class="fa-solid fa-ticket"></i> Đặt tour</p>
+            <h1 class="admin-page__title">Quản lý đặt chỗ</h1>
+            <p class="admin-page__subtitle">Theo dõi booking, xác nhận hoặc cập nhật trạng thái đơn.</p>
+        </div>
+    </header>
+
+    <div class="admin-toolbar">
+        <nav class="admin-filter" aria-label="Lọc theo trạng thái">
+            <a class="admin-filter__link @(string.IsNullOrWhiteSpace(currentFilter) ? "admin-filter__link--active" : null)"
+               asp-area="Admin" asp-controller="Booking" asp-action="Index">Tất cả</a>
+            <a class="admin-filter__link @(string.Equals(currentFilter, "pending", StringComparison.OrdinalIgnoreCase) ? "admin-filter__link--active" : null)"
+               asp-area="Admin" asp-controller="Booking" asp-action="Index" asp-route-status="pending">Chờ xác nhận</a>
+            <a class="admin-filter__link @(string.Equals(currentFilter, "confirmed", StringComparison.OrdinalIgnoreCase) ? "admin-filter__link--active" : null)"
+               asp-area="Admin" asp-controller="Booking" asp-action="Index" asp-route-status="confirmed">Đã xác nhận</a>
+            <a class="admin-filter__link @(string.Equals(currentFilter, "cancelled", StringComparison.OrdinalIgnoreCase) ? "admin-filter__link--active" : null)"
+               asp-area="Admin" asp-controller="Booking" asp-action="Index" asp-route-status="cancelled">Đã hủy</a>
+            <a class="admin-filter__link @(string.Equals(currentFilter, "completed", StringComparison.OrdinalIgnoreCase) ? "admin-filter__link--active" : null)"
+               asp-area="Admin" asp-controller="Booking" asp-action="Index" asp-route-status="completed">Hoàn thành</a>
+        </nav>
+    </div>
+
+    <div class="admin-card">
+        <div class="admin-table-wrap admin-card__body">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Mã đơn</th>
+                        <th>Khách</th>
+                        <th>Tour</th>
+                        <th>Ngày đi</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="7" style="padding:2rem 1rem;text-align:center;color:var(--admin-color-text-secondary);">
+                            Chưa có đặt chỗ phù hợp bộ lọc.
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var booking in Model)
+                    {
+                        var badgeClass = booking.Status switch
+                        {
+                            BookingStatus.Pending => "admin-badge--pending",
+                            BookingStatus.Confirmed => "admin-badge--confirmed",
+                            BookingStatus.Cancelled => "admin-badge--cancelled",
+                            BookingStatus.Completed => "admin-badge--completed",
+                            _ => ""
+                        };
+                        <tr>
+                            <td><strong>#@booking.Id</strong></td>
+                            <td>@booking.ContactName</td>
+                            <td>@(booking.Tour?.Name ?? "—")</td>
+                            <td>@booking.TravelDate.ToString("dd/MM/yyyy")</td>
+                            <td>@booking.TotalPrice.ToString("N0") đ</td>
+                            <td>
+                                <span class="admin-badge @badgeClass">@BookingStatusDisplay.ToVietnamese(booking.Status)</span>
+                            </td>
+                            <td>
+                                <div class="admin-actions">
+                                    <a class="admin-btn admin-btn--ghost admin-btn--sm" asp-action="Details" asp-route-id="@booking.Id">Chi tiết</a>
+                                    <form asp-action="UpdateStatus" method="post" class="admin-actions">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@booking.Id" />
+                                        <input type="hidden" name="returnStatus" value="@currentFilter" />
+                                        <select name="status" class="admin-select-compact" aria-label="Trạng thái cho đơn @booking.Id">
+                                            @foreach (BookingStatus s in Enum.GetValues<BookingStatus>())
+                                            {
+                                                if (booking.Status == s)
+                                                {
+                                                    <option value="@s" selected>@BookingStatusDisplay.ToVietnamese(s)</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@s">@BookingStatusDisplay.ToVietnamese(s)</option>
+                                                }
+                                            }
+                                        </select>
+                                        <button type="submit" class="admin-btn admin-btn--primary admin-btn--sm">Cập nhật</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

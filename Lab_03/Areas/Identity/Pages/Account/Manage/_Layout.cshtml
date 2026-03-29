@@ -1,0 +1,32 @@
+﻿@{
+    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout != null)
+    {
+        Layout = parentLayout.ToString();
+    }
+    else
+    {
+        Layout = "/Views/Shared/_Layout.cshtml";
+    }
+}
+<link rel="stylesheet" href="~/css/account-manage.css" asp-append-version="true" />
+
+<section class="account-manage">
+    <header class="account-manage__header">
+        <p class="account-manage__eyebrow">Tài khoản</p>
+        <h1 class="account-manage__title">Quản lý thông tin cá nhân</h1>
+        <p class="account-manage__subtitle">Cập nhật hồ sơ, email và mật khẩu để bảo vệ tài khoản của bạn.</p>
+    </header>
+
+    <div class="account-manage__content">
+        <aside class="account-manage__sidebar">
+            <partial name="_ManageNav" />
+        </aside>
+        <section class="account-manage__main">
+            @RenderBody()
+        </section>
+    </div>
+</section>
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}

@@ -1,0 +1,18 @@
+@model Lab_03.Models.Destination
+
+<h2>Xóa Điểm đến</h2>
+
+<form asp-action="DeleteConfirmed" method="post">
+
+    <input type="hidden" asp-for="Id" />
+
+    <p>
+        Bạn có chắc chắn muốn xóa
+        <strong>@Model.Name</strong> ?
+    </p>
+
+    <button type="submit" class="btn btn-danger">Delete</button>
+
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+
+</form>

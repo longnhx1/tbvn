@@ -1,0 +1,126 @@
+@model Lab_03.Models.Tour
+@{
+    ViewData["Title"] = Model.Name;
+    var mainImage = string.IsNullOrWhiteSpace(Model.ImageUrl) ? "/images/c0c9124a-vinh-ha-long-1.jpg" : Model.ImageUrl;
+    var gallery = (Model.Images ?? [])
+        .Where(i => !string.IsNullOrWhiteSpace(i.Url))
+        .Select(i => i.Url!)
+        .Distinct()
+        .ToList();
+    if (!gallery.Contains(mainImage))
+        gallery.Insert(0, mainImage);
+}
+<section class="tour-detail">
+    <nav class="tour-detail__breadcrumb" aria-label="Breadcrumb">
+        <a asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
+        <span aria-hidden="true">/</span>
+        <a asp-action="Index">Tour</a>
+        <span aria-hidden="true">/</span>
+        <span>@Model.Name</span>
+    </nav>
+
+    <div class="tour-detail__grid">
+        <div class="tour-detail__gallery">
+            <div class="tour-detail__main-photo">
+                <img id="tourGalleryMain" src="@gallery.FirstOrDefault()" alt="@Model.Name" />
+            </div>
+            @if (gallery.Count > 1)
+            {
+                <div class="tour-detail__thumbs" role="list">
+                    @foreach (var url in gallery.Take(8))
+                    {
+                        <button type="button" class="tour-detail__thumb@(url == gallery.First() ? " is-active" : "")" data-src="@url" aria-label="Xem ảnh">
+                            <img src="@url" alt="" loading="lazy" />
+                        </button>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="tour-detail__panel">
+            <p class="tour-detail__destination">@(Model.Destination?.Name ?? "Tour Việt Nam")</p>
+            <h1 class="tour-detail__title">@Model.Name</h1>
+
+            <div class="tour-detail__stats">
+                <div class="tour-detail__stat">
+                    <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                    <div>
+                        <span class="tour-detail__stat-label">Ngày khởi hành</span>
+                        <strong>@Model.DepartureDate.ToString("dd/MM/yyyy")</strong>
+                    </div>
+                </div>
+                <div class="tour-detail__stat">
+                    <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                    <div>
+                        <span class="tour-detail__stat-label">Thời lượng</span>
+                        <strong>@Model.DurationDays ngày @(Model.DurationDays - 1) đêm</strong>
+                    </div>
+                </div>
+                <div class="tour-detail__stat">
+                    <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                    <div>
+                        <span class="tour-detail__stat-label">Xuất phát</span>
+                        <strong>@Model.DepartureLocation</strong>
+                    </div>
+                </div>
+                <div class="tour-detail__stat">
+                    <i class="fa-solid fa-user-group" aria-hidden="true"></i>
+                    <div>
+                        <span class="tour-detail__stat-label">Chỗ còn lại</span>
+                        <strong>@Model.AvailableSeats / @Model.MaxGuests khách</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tour-detail__price-box">
+                <span class="tour-detail__price-label">Giá cho 1 khách</span>
+                <p class="tour-detail__price">@Model.Price.ToString("N0") <span>đ</span></p>
+                <p class="tour-detail__price-note">Đã bao gồm các dịch vụ ghi trong phần “Trong giá”. Trẻ em có thể áp dụng mức giá riêng khi đặt chỗ.</p>
+                <a asp-area="" asp-controller="Bookings" asp-action="Create" asp-route-tourId="@Model.Id" class="btn btn--primary tour-detail__cta">
+                    <i class="fa-solid fa-ticket" aria-hidden="true"></i> Đặt tour ngay
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="tour-detail__content section">
+        <div class="tour-detail__article">
+            <h2>Giới thiệu chuyến đi</h2>
+            <div class="tour-detail__description">@Model.Description</div>
+
+            <div class="tour-detail__lists">
+                <div class="tour-detail__list-card tour-detail__list-card--in">
+                    <h3><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Trong giá</h3>
+                    <p>@Model.IncludedServices</p>
+                </div>
+                <div class="tour-detail__list-card tour-detail__list-card--out">
+                    <h3><i class="fa-solid fa-circle-xmark" aria-hidden="true"></i> Không gồm</h3>
+                    <p>@Model.ExcludedServices</p>
+                </div>
+            </div>
+
+            <div class="tour-detail__policy">
+                <h3><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Chính sách hủy / hoàn</h3>
+                <p>@Model.CancellationPolicy</p>
+                <p class="tour-detail__transport"><strong>Phương tiện:</strong> @Model.TransportType</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        (function () {
+            var main = document.getElementById('tourGalleryMain');
+            if (!main) return;
+            document.querySelectorAll('.tour-detail__thumb').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var src = btn.getAttribute('data-src');
+                    if (src) main.src = src;
+                    document.querySelectorAll('.tour-detail__thumb').forEach(function (b) { b.classList.remove('is-active'); });
+                    btn.classList.add('is-active');
+                });
+            });
+        })();
+    </script>
+}

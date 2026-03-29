@@ -1,0 +1,21 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Lỗi";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/customer-pages.css" asp-append-version="true" />
+}
+
+<div class="customer-static-page">
+    <h1 class="text-danger">Đã xảy ra lỗi</h1>
+    <h2 class="text-danger">Ứng dụng gặp sự cố khi xử lý yêu cầu.</h2>
+
+    @if (Model.ShowRequestId)
+    {
+        <p>
+            <strong>Request ID:</strong> <code>@Model.RequestId</code>
+        </p>
+    }
+
+    <p>Chi tiết kỹ thuật chỉ hiển thị khi chạy môi trường Development.</p>
+</div>

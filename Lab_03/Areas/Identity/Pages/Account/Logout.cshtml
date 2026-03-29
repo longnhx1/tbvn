@@ -1,0 +1,88 @@
+﻿@page
+@model LogoutModel
+@{
+    ViewData["Title"] = "Đăng xuất";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="auth-container">
+    <div class="auth-card logout-card">
+
+        <!-- Left Side - Brand -->
+        <div class="auth-brand-section logout-brand">
+            <div class="brand-content">
+                <div class="brand-illustration">
+                    <div class="circle circle-1"></div>
+                    <div class="circle circle-2"></div>
+                    <div class="circle circle-3"></div>
+                    <div class="shopping-icon">&#128274;</div>
+                </div>
+                <h2>Hẹn gặp lại!</h2>
+                <p>Cảm ơn bạn đã mua sắm tại L Store. Hẹn gặp lại lần sau!</p>
+                <ul class="brand-features">
+                    <li><span class="check">&#10003;</span> Đơn hàng được bảo vệ</li>
+                    <li><span class="check">&#10003;</span> Dữ liệu an toàn</li>
+                    <li><span class="check">&#10003;</span> Phiên đăng nhập đã kết thúc</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right Side - Logout Content -->
+        <div class="auth-form-section">
+            <div class="auth-header">
+                <a href="/" class="auth-logo">
+                    <span class="brand-icon">L</span>
+                    <span class="brand-text">L Store</span>
+                </a>
+                <h1 class="auth-title">@ViewData["Title"]</h1>
+            </div>
+
+            <div class="logout-content">
+                @if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    <div class="logout-box">
+                        <div class="logout-icon-wrap">
+                            <span class="logout-icon">&#128273;</span>
+                        </div>
+                        <p class="logout-desc">Bạn có chắc chắn muốn đăng xuất khỏi tài khoản không?</p>
+                        <form class="logout-form" asp-area="Identity" asp-page="/Account/Logout"
+                              asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                            <button type="submit" class="btn-auth btn-primary-auth">
+                                <span>Xác nhận đăng xuất</span>
+                                <span class="btn-icon">&#10140;</span>
+                            </button>
+                        </form>
+                        <a href="/" class="btn-auth btn-outline-auth">
+                            <span>Quay về trang chủ</span>
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="logout-box">
+                        <div class="logout-icon-wrap success">
+                            <span class="logout-icon">&#10003;</span>
+                        </div>
+                        <p class="logout-desc">Bạn đã đăng xuất thành công khỏi tài khoản.</p>
+                        <a href="/Identity/Account/Login" class="btn-auth btn-primary-auth">
+                            <span>Đăng nhập lại</span>
+                            <span class="btn-icon">&#10140;</span>
+                        </a>
+                        <a href="/" class="btn-auth btn-outline-auth">
+                            <span>Quay về trang chủ</span>
+                        </a>
+                    </div>
+                }
+
+                <div class="auth-footer">
+                    <p>Chưa có tài khoản? <a asp-area="Identity" asp-page="/Account/Register">Đăng ký ngay</a></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/auth.js"></script>
+}

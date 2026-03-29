@@ -1,0 +1,112 @@
+@model Lab_03.Models.ViewModels.ToursIndexViewModel
+@{
+    ViewData["Title"] = "Danh sách tour";
+    string IsDestChecked(int id) => Model.SelectedDestinationIds.Contains(id) ? "checked" : "";
+}
+
+<div class="tours-page">
+    <header class="tours-page__hero">
+        <div class="tours-page__hero-inner">
+            <h1>Khám phá tour Việt Nam</h1>
+            <p>Lọc theo điểm đến, ngày khởi hành, giá — mỗi tour hiển thị <strong>giá cho 1 khách</strong>.</p>
+        </div>
+    </header>
+
+    <div class="tours-page__layout">
+        <aside class="tours-filter" aria-label="Bộ lọc tour">
+            <form class="tours-filter__form" asp-action="Index" method="get" id="toursFilterForm">
+                <div class="tours-filter__block">
+                    <label class="tours-filter__label" for="tours-q">Tìm nhanh</label>
+                    <input id="tours-q" type="search" name="q" value="@Model.SearchQuery" class="tours-filter__input" placeholder="Tên tour, điểm đến…" autocomplete="off" />
+                </div>
+
+                <div class="tours-filter__block">
+                    <span class="tours-filter__label">Điểm đến (chọn nhiều)</span>
+                    <div class="tours-filter__checks">
+                        @foreach (var d in Model.Destinations)
+                        {
+                            <label class="tours-filter__check">
+                                <input type="checkbox" name="destinationIds" value="@d.Id" @IsDestChecked(d.Id) />
+                                <span>@d.Name</span>
+                            </label>
+                        }
+                    </div>
+                </div>
+
+                <div class="tours-filter__row">
+                    <div class="tours-filter__block">
+                        <label class="tours-filter__label" for="minPrice">Giá từ (đ / người)</label>
+                        <input id="minPrice" type="number" name="minPrice" value="@Model.MinPrice" class="tours-filter__input" min="0" step="1000" placeholder="Tối thiểu" />
+                    </div>
+                    <div class="tours-filter__block">
+                        <label class="tours-filter__label" for="maxPrice">Đến</label>
+                        <input id="maxPrice" type="number" name="maxPrice" value="@Model.MaxPrice" class="tours-filter__input" min="0" step="1000" placeholder="Tối đa" />
+                    </div>
+                </div>
+
+                <div class="tours-filter__row">
+                    <div class="tours-filter__block">
+                        <label class="tours-filter__label" for="departFrom">Khởi hành từ ngày</label>
+                        <input id="departFrom" type="date" name="departFrom" value="@(Model.DepartFrom?.ToString("yyyy-MM-dd"))" class="tours-filter__input" />
+                    </div>
+                    <div class="tours-filter__block">
+                        <label class="tours-filter__label" for="departTo">Đến ngày</label>
+                        <input id="departTo" type="date" name="departTo" value="@(Model.DepartTo?.ToString("yyyy-MM-dd"))" class="tours-filter__input" />
+                    </div>
+                </div>
+
+                <div class="tours-filter__block">
+                    <label class="tours-filter__label" for="departLoc">Nơi xuất phát (tùy chọn)</label>
+                    <input id="departLoc" type="text" name="departLoc" value="@Model.DepartureLocationFilter" class="tours-filter__input" placeholder="Ví dụ: TP. Hồ Chí Minh" autocomplete="off" />
+                </div>
+
+                <div class="tours-filter__actions">
+                    <button type="submit" class="tours-filter__submit">Áp dụng</button>
+                    <a asp-action="Index" class="tours-filter__reset">Xóa bộ lọc</a>
+                </div>
+            </form>
+        </aside>
+
+        <div class="tours-page__main">
+            <p class="tours-page__count">@Model.Tours.Count tour phù hợp</p>
+
+            @if (!Model.Tours.Any())
+            {
+                <div class="empty-featured">
+                    <i class="fa-solid fa-map" aria-hidden="true"></i>
+                    <p><strong>Không tìm thấy tour phù hợp.</strong></p>
+                    <p>Thử đổi bộ lọc hoặc <a asp-action="Index">xem tất cả tour</a>.</p>
+                </div>
+            }
+            else
+            {
+                <div class="tickets-grid tours-grid">
+                    @foreach (var tour in Model.Tours)
+                    {
+                        <article class="ticket-card tour-card">
+                            <a asp-action="Details" asp-route-id="@tour.Id" class="ticket-card__image-link">
+                                <div class="ticket-card__image-wrap">
+                                    <img src="@(string.IsNullOrWhiteSpace(tour.ImageUrl) ? "/images/c0c9124a-vinh-ha-long-1.jpg" : tour.ImageUrl)" alt="@tour.Name" loading="lazy" />
+                                </div>
+                            </a>
+                            <div class="ticket-card__body">
+                                <p class="ticket-card__brand">@(tour.Destination?.Name ?? "Tour")</p>
+                                <h3 class="ticket-card__name"><a asp-action="Details" asp-route-id="@tour.Id">@tour.Name</a></h3>
+                                <ul class="tour-card__meta">
+                                    <li><i class="fa-regular fa-calendar" aria-hidden="true"></i> @tour.DepartureDate.ToString("dd/MM/yyyy")</li>
+                                    <li><i class="fa-regular fa-clock" aria-hidden="true"></i> @tour.DurationDays ngày @(tour.DurationDays - 1) đêm</li>
+                                    <li><i class="fa-solid fa-location-dot" aria-hidden="true"></i> @tour.DepartureLocation</li>
+                                </ul>
+                                <div class="tour-card__price-row">
+                                    <span class="ticket-card__price">@tour.Price.ToString("N0") đ</span>
+                                    <span class="tour-card__price-unit">/ người</span>
+                                </div>
+                                <a asp-area="" asp-controller="Bookings" asp-action="Create" asp-route-tourId="@tour.Id" class="btn btn--cart">Đặt tour</a>
+                            </div>
+                        </article>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

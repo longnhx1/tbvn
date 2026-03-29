@@ -1,0 +1,300 @@
+﻿@model Lab_03.Models.Tour
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "Chỉnh sửa Tour";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-tour-form.css" asp-append-version="true" />
+}
+
+<div class="ticket-form-page">
+    <form asp-area="Admin" asp-action="Update" method="post" enctype="multipart/form-data" id="editProductForm">
+        <input type="hidden" asp-for="Id" />
+
+        <!-- Page Header -->
+        <header class="ticket-form-header">
+            <div class="ticket-form-header__left">
+                <a asp-area="Admin" asp-controller="Tour" asp-action="Index" class="ticket-form-header__back" title="Quay lại">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+                <div class="ticket-form-header__title">
+                    <h1>Chỉnh sửa Tour</h1>
+                    <p>Cập nhật thông tin tour: @Model.Name</p>
+                </div>
+            </div>
+            <div class="ticket-form-header__actions">
+                <a asp-area="Admin" asp-controller="Tour" asp-action="Index" class="btn-secondary">
+                    <i class="fa-solid fa-xmark"></i>
+                    <span>Hủy</span>
+                </a>
+                <button type="submit" class="btn-primary">
+                    <i class="fa-solid fa-check"></i>
+                    <span>Lưu thay đổi</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Form Grid -->
+        <div class="ticket-form__grid">
+            <!-- Main Column -->
+            <div class="ticket-form__main">
+                <!-- Basic Info Card -->
+                <div class="form-card">
+                    <div class="form-card__header">
+                        <i class="fa-solid fa-box"></i>
+                        <h2>Thông tin cơ bản</h2>
+                    </div>
+                    <div class="form-card__body">
+                        <div class="form-group">
+                            <label asp-for="Name" class="form-label">
+                                Tên tour <span class="required">*</span>
+                            </label>
+                            <input asp-for="Name" class="form-input" placeholder="Nhập tên tour..." />
+                            <span asp-validation-for="Name" class="form-error"></span>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label asp-for="Price" class="form-label">
+                                    Giá cho 1 khách <span class="required">*</span>
+                                </label>
+                                <div class="input-with-suffix">
+                                    <input asp-for="Price" class="form-input" placeholder="0" step="1000" />
+                                    <span class="input-suffix">VNĐ</span>
+                                </div>
+                                <div class="form-hint" style="margin-top:0.35rem;">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                    <span>Giá một người lớn; đặt tour có thể áp dụng mức trẻ em.</span>
+                                </div>
+                                <span asp-validation-for="Price" class="form-error"></span>
+                            </div>
+
+                            <div class="form-group destination-picker">
+                                <label asp-for="DestinationId" class="form-label">
+                                    Điểm đến <span class="required">*</span>
+                                </label>
+                                <label for="destinationFilter" class="sr-only">Lọc điểm đến theo tên</label>
+                                <input type="search"
+                                       id="destinationFilter"
+                                       class="form-input destination-picker__filter"
+                                       placeholder="Gõ tên tỉnh, thành để lọc…"
+                                       autocomplete="off" />
+                                <div class="select-wrapper">
+                                    <select asp-for="DestinationId" asp-items="@ViewBag.Destinations" id="destinationSelect" class="form-select">
+                                        <option value="">-- Chọn danh mục --</option>
+                                    </select>
+                                    <i class="fa-solid fa-chevron-down select-icon"></i>
+                                </div>
+                                <span asp-validation-for="DestinationId" class="form-error"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-card">
+                    <div class="form-card__header">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <h2>Lịch trình &amp; chỗ</h2>
+                    </div>
+                    <div class="form-card__body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label asp-for="DepartureDate" class="form-label">Ngày khởi hành <span class="required">*</span></label>
+                                <input asp-for="DepartureDate" class="form-input" type="date" />
+                                <span asp-validation-for="DepartureDate" class="form-error"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="DurationDays" class="form-label">Số ngày <span class="required">*</span></label>
+                                <input asp-for="DurationDays" type="number" class="form-input" min="1" max="30" />
+                                <span asp-validation-for="DurationDays" class="form-error"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="DepartureLocation" class="form-label">Điểm khởi hành <span class="required">*</span></label>
+                            <input asp-for="DepartureLocation" class="form-input" />
+                            <span asp-validation-for="DepartureLocation" class="form-error"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label asp-for="MaxGuests" class="form-label">Số khách tối đa</label>
+                                <input asp-for="MaxGuests" type="number" class="form-input" min="1" max="200" />
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="AvailableSeats" class="form-label">Còn trống</label>
+                                <input asp-for="AvailableSeats" type="number" class="form-input" min="0" max="200" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="TransportType" class="form-label">Phương tiện</label>
+                            <input asp-for="TransportType" class="form-input" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="IncludedServices" class="form-label">Trong giá</label>
+                            <textarea asp-for="IncludedServices" class="form-textarea" rows="2"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ExcludedServices" class="form-label">Không gồm</label>
+                            <textarea asp-for="ExcludedServices" class="form-textarea" rows="2"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="CancellationPolicy" class="form-label">Chính sách hủy</label>
+                            <textarea asp-for="CancellationPolicy" class="form-textarea" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description Card -->
+                <div class="form-card">
+                    <div class="form-card__header">
+                        <i class="fa-solid fa-align-left"></i>
+                        <h2>Mô tả vé</h2>
+                    </div>
+                    <div class="form-card__body">
+                        <div class="form-group">
+                            <label asp-for="Description" class="form-label">Mô tả tour</label>
+                            <textarea asp-for="Description" class="form-textarea" rows="6" placeholder="Nhập mô tả tour..."></textarea>
+                            <span asp-validation-for="Description" class="form-error"></span>
+                            <div class="form-hint">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <span>Mô tả giúp khách hàng hiểu rõ hơn về tour</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Column -->
+            <div class="ticket-form__sidebar">
+                <!-- Image Upload Card -->
+                <div class="form-card">
+                    <div class="form-card__header">
+                        <i class="fa-solid fa-image"></i>
+                        <h2>Ảnh đại diện &amp; album</h2>
+                    </div>
+                    <div class="form-card__body">
+                        <div class="image-upload" id="imageUploadArea">
+                            <input type="file" name="imageUrl" class="image-upload__input" id="imageInput" accept="image/*" />
+
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <!-- Preview with existing image -->
+                                <div class="image-upload__preview" id="imagePreview">
+                                    <img src="@Model.ImageUrl" alt="@Model.Name" id="previewImage" />
+                                    <div class="image-upload__overlay">
+                                        <button type="button" class="image-upload__remove" id="removeImageBtn">
+                                            <i class="fa-solid fa-trash"></i>
+                                            Xóa
+                                        </button>
+                                        <label for="imageInput" class="image-upload__change">
+                                            <i class="fa-solid fa-rotate"></i>
+                                            Đổi ảnh
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- Hidden placeholder -->
+                                <div class="image-upload__placeholder d-none" id="uploadPlaceholder">
+                                    <div class="image-upload__icon">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    </div>
+                                    <p class="image-upload__text">Kéo thả hình ảnh vào đây hoặc</p>
+                                    <label for="imageInput" class="image-upload__btn">
+                                        <i class="fa-solid fa-folder-open"></i>
+                                        Chọn từ máy tính
+                                    </label>
+                                    <p class="image-upload__hint">PNG, JPG, WEBP (Tối đa 5MB)</p>
+                                </div>
+                            }
+                            else
+                            {
+                                <!-- Placeholder visible by default -->
+                                <div class="image-upload__placeholder" id="uploadPlaceholder">
+                                    <div class="image-upload__icon">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    </div>
+                                    <p class="image-upload__text">Kéo thả hình ảnh vào đây hoặc</p>
+                                    <label for="imageInput" class="image-upload__btn">
+                                        <i class="fa-solid fa-folder-open"></i>
+                                        Chọn từ máy tính
+                                    </label>
+                                    <p class="image-upload__hint">PNG, JPG, WEBP (Tối đa 5MB)</p>
+                                </div>
+                                <!-- Hidden preview -->
+                                <div class="image-upload__preview d-none" id="imagePreview">
+                                    <img src="" alt="Preview" id="previewImage" />
+                                    <div class="image-upload__overlay">
+                                        <button type="button" class="image-upload__remove" id="removeImageBtn">
+                                            <i class="fa-solid fa-trash"></i>
+                                            Xóa
+                                        </button>
+                                        <label for="imageInput" class="image-upload__change">
+                                            <i class="fa-solid fa-rotate"></i>
+                                            Đổi ảnh
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        @if (Model.Images != null && Model.Images.Count > 0)
+                        {
+                            <div class="form-group" style="margin-top:1rem;">
+                                <span class="form-label">Ảnh phụ hiện có</span>
+                                <ul class="admin-gallery-list" style="list-style:none;padding:0;margin:0.5rem 0 0;display:flex;flex-direction:column;gap:0.5rem;">
+                                    @foreach (var img in Model.Images)
+                                    {
+                                        <li class="admin-gallery-list__row" style="display:flex;align-items:center;gap:0.75rem;">
+                                            <img src="@img.Url" alt="" style="width:64px;height:48px;object-fit:cover;border-radius:8px;" />
+                                            <label style="font-size:0.875rem;cursor:pointer;display:flex;align-items:center;gap:0.35rem;">
+                                                <input type="checkbox" name="removeGalleryIds" value="@img.Id" />
+                                                Xóa ảnh này
+                                            </label>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                        <div class="form-group" style="margin-top:1rem;">
+                            <label class="form-label">Thêm ảnh phụ</label>
+                            <input type="file" name="galleryImages" class="form-input" accept="image/*" multiple />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tips Card -->
+                <div class="form-card form-card--tips">
+                    <div class="form-card__header">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <h2>Lưu ý khi chỉnh sửa</h2>
+                    </div>
+                    <div class="form-card__body">
+                        <ul class="tips-list">
+                            <li>
+                                <i class="fa-solid fa-check"></i>
+                                <span>Kiểm tra kỹ thông tin trước khi lưu</span>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-check"></i>
+                                <span>Chỉ upload ảnh mới nếu muốn thay đổi</span>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-check"></i>
+                                <span>Giá sẽ được cập nhật ngay lập tức</span>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-check"></i>
+                                <span>Nhấn "Hủy" để quay lại mà không lưu</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/admin-tour-form.js" asp-append-version="true"></script>
+    <script src="~/js/destination-select-filter.js" asp-append-version="true"></script>
+}

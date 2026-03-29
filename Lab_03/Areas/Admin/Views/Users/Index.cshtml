@@ -1,0 +1,59 @@
+@model IReadOnlyList<Lab_03.Models.ViewModels.AdminUserListRowViewModel>
+@{
+    ViewData["Title"] = "Tài khoản";
+}
+
+<div class="admin-page">
+    <header class="admin-page__header">
+        <div class="admin-page__header-main">
+            <p class="admin-page__eyebrow"><i class="fa-solid fa-users-gear"></i> Người dùng</p>
+            <h1 class="admin-page__title">Tài khoản trong hệ thống</h1>
+            <p class="admin-page__subtitle">Danh sách tài khoản nội bộ và khách (theo vai trò Identity).</p>
+        </div>
+        <div class="admin-page__actions">
+            <a asp-action="Create" class="admin-btn admin-btn--primary">
+                <i class="fa-solid fa-user-plus" aria-hidden="true"></i> Tạo tài khoản
+            </a>
+        </div>
+    </header>
+
+    @if (TempData["SuccessMessage"] is string msg)
+    {
+        <div class="admin-alert admin-alert--success" role="alert">@msg</div>
+    }
+    @if (TempData["ErrorMessage"] is string err)
+    {
+        <div class="admin-alert admin-alert--error" role="alert">@err</div>
+    }
+
+    <div class="admin-card">
+        <div class="admin-table-wrap admin-card__body">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Họ tên</th>
+                        <th>Vai trò</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var row in Model)
+                {
+                    <tr>
+                        <td>@row.Email</td>
+                        <td>@row.FullName</td>
+                        <td>@string.Join(", ", row.Roles)</td>
+                        <td>
+                            <div class="admin-actions">
+                                <a asp-action="Edit" asp-route-id="@row.Id" class="admin-btn admin-btn--ghost admin-btn--sm">Sửa</a>
+                                <a asp-action="Delete" asp-route-id="@row.Id" class="admin-btn admin-btn--ghost admin-btn--sm">Xóa</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+@model Lab_03.Models.Destination
+@{
+    ViewData["Title"] = "Edit Destination";
+}
+
+<link rel="stylesheet" href="~/css/admin-destination-form.css" />
+
+<div class="form-container">
+    <div class="form-wrapper">
+        <!-- Header Section -->
+        <div class="form-header">
+            <h1 class="form-title">Edit Destination</h1>
+            <p class="form-subtitle">Update your destination information</p>
+        </div>
+
+        <!-- Form Section -->
+        <form asp-action="Update" method="post" class="category-form">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-field">
+                <label asp-for="Name" class="form-label">Destination Name</label>
+                <div class="input-wrapper">
+                    <input asp-for="Name" class="form-input" placeholder="Enter category name" />
+                    <span asp-validation-for="Name" class="form-error"></span>
+                </div>
+                <p class="form-hint">Update the destination name if needed</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Update Destination</button>
+                <a asp-area="Admin" asp-controller="Categories" asp-action="Index" class="btn btn-secondary">Cancel</a>
+                <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="btn btn-tertiary">Back to Dashboard</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="~/js/admin-destination-form.js"></script>

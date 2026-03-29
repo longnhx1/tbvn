@@ -1,0 +1,14 @@
+﻿/* Trang tĩnh khách (Privacy, Error, v.v.) – bổ sung lên customer-shell + tours-bookings */
+.customer-static-page {
+    max-width: 720px;
+    margin: 2rem auto;
+    padding: 0 1.25rem 3rem;
+    color: var(--color-text, #1d1d1f);
+}
+.customer-static-page h1 {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+}
+.customer-static-page .text-danger {
+    color: #c62828;
+}

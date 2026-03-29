@@ -1,0 +1,48 @@
+@model Lab_03.Models.ViewModels.BookingTicketCardModel
+@using Lab_03.Models
+
+<section class="e-ticket" aria-label="Vé điện tử demo">
+    <div class="e-ticket__inner">
+        <header class="e-ticket__head">
+            <span class="e-ticket__eyebrow">Vé điện tử (demo)</span>
+            <h2 class="e-ticket__title">@Model.Booking.Tour?.Name</h2>
+            <p class="e-ticket__code">Mã đặt chỗ <strong>#@Model.Booking.Id</strong></p>
+        </header>
+
+        <div class="e-ticket__grid">
+            <div class="e-ticket__qr-wrap">
+                <img src="@Model.QrDataUrl" alt="Mã QR thông tin vé (demo)" class="e-ticket__qr" width="180" height="180" />
+                <p class="e-ticket__qr-hint">Quét mã để xem dữ liệu mô phỏng (tóm tắt trên mã). Cổng thật có thể dẫn tới liên kết xác minh.</p>
+                <a href="@Model.TicketUrl" class="e-ticket__link">Mở trang vé đầy đủ</a>
+            </div>
+            <ul class="e-ticket__meta">
+                <li><span>Khởi hành (đặt)</span><strong>@Model.Booking.TravelDate.ToString("dd/MM/yyyy")</strong></li>
+                <li><span>Điểm đến</span><strong>@(Model.Booking.Tour?.Destination?.Name ?? "-")</strong></li>
+                <li><span>Xuất phát tour</span><strong>@(Model.Booking.Tour?.DepartureLocation ?? "-")</strong></li>
+                <li><span>Khách</span><strong>@Model.Booking.Adults người lớn, @Model.Booking.Children trẻ em</strong></li>
+                <li><span>Giá tour (gốc)</span><strong>@Model.Booking.TotalPrice.ToString("N0") đ</strong></li>
+                <li><span>Tổng phải trả (demo)</span><strong>@Model.Booking.TotalPayable.ToString("N0") đ</strong></li>
+                <li><span>Đã nộp</span><strong>@Model.Booking.TotalPaid.ToString("N0") đ</strong></li>
+                <li><span>Trạng thái tour</span><strong>@BookingStatusDisplay.ToVietnamese(Model.Booking.Status)</strong></li>
+                <li><span>Thanh toán demo</span><strong>@(Model.Booking.IsDemoPaid ? "Đã hoàn tất" : "Chưa hoàn tất")</strong></li>
+                @if (Model.Booking.PaymentMode == BookingPaymentMode.Installment)
+                {
+                    <li><span>Trả góp</span><strong>@Model.Booking.InstallmentMonths tháng</strong> (lãi @Model.Booking.MonthlyInterestPercent%/tháng)</li>
+                }
+                @if (Model.Booking.IsDemoPaid && !string.IsNullOrEmpty(Model.Booking.DemoPaymentRef))
+                {
+                    <li><span>Mã GD demo</span><strong>@Model.Booking.DemoPaymentRef</strong></li>
+                }
+            </ul>
+        </div>
+
+        @if (Model.ShowEmailBlock)
+        {
+            <div class="e-ticket__email-mock">
+                <h3 class="e-ticket__email-title"><i class="fa-regular fa-envelope" aria-hidden="true"></i> Nội dung email gửi khách (mô phỏng)</h3>
+                <p class="e-ticket__email-note">Hệ thống thật sẽ gửi qua SMTP / SendGrid. Ở đây chỉ hiển thị nội dung để copy hoặc minh họa đồ án.</p>
+                <textarea class="e-ticket__email-body" readonly rows="12" aria-label="Nội dung email demo">@Model.MockEmailBody</textarea>
+            </div>
+        }
+    </div>
+</section>

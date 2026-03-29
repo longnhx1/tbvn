@@ -1,0 +1,17 @@
+@{
+    ViewData["Title"] = "Cài đặt";
+}
+
+<div class="admin-page">
+    <div class="admin-card">
+        <div class="admin-stub admin-card__body--padded">
+            <div class="admin-stub__icon" aria-hidden="true"><i class="fa-solid fa-gear"></i></div>
+            <h2>Cài đặt hệ thống</h2>
+            <p>Màn hình cấu hình chung, thanh toán và tích hợp sẽ được bổ sung sau. Hiện tại bạn có thể quản lý tour, điểm đến và tài khoản người dùng.</p>
+            <div class="admin-stub-links">
+                <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="admin-btn admin-btn--primary">Tài khoản người dùng</a>
+                <a asp-area="Admin" asp-controller="Tour" asp-action="Index" class="admin-btn admin-btn--ghost">Danh sách tour</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,151 @@
+@model Lab_03.Models.ViewModels.BookingCreateViewModel
+@{
+    ViewData["Title"] = "Đặt tour";
+    var childRate = 0.7m;
+}
+
+<div class="booking-page">
+    <header class="booking-page__intro">
+        <h1 class="booking-page__title">Đặt tour</h1>
+        <p class="booking-page__tour-name">@Model.TourName</p>
+        <p class="booking-page__price-hint">
+            <i class="fa-solid fa-tag" aria-hidden="true"></i>
+            Giá niêm yết <strong>@Model.UnitPrice.ToString("N0") đ / người lớn</strong>.
+            Trẻ em tính 70% giá một người lớn chỗ.
+        </p>
+    </header>
+
+    <div class="booking-page__layout">
+        <form asp-action="Create" method="post" class="booking-card booking-form" id="bookingForm">
+            <input asp-for="TourId" type="hidden" />
+            <input type="hidden" id="unitPrice" name="UnitPrice" value="@Model.UnitPrice.ToString(System.Globalization.CultureInfo.InvariantCulture)" />
+            <input asp-for="TourName" type="hidden" />
+            <input asp-for="DefaultTravelDate" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="booking-form__errors" role="alert"></div>
+
+            <h2 class="booking-card__heading">Thông tin liên hệ</h2>
+            <div class="booking-form__grid">
+                <div class="form-group">
+                    <label asp-for="ContactName" class="booking-form__label">Họ tên</label>
+                    <input asp-for="ContactName" class="booking-form__input" autocomplete="name" />
+                    <span asp-validation-for="ContactName" class="booking-form__err"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ContactPhone" class="booking-form__label">Điện thoại</label>
+                    <input asp-for="ContactPhone" class="booking-form__input" autocomplete="tel" />
+                    <span asp-validation-for="ContactPhone" class="booking-form__err"></span>
+                </div>
+                <div class="form-group booking-form__full">
+                    <label asp-for="ContactEmail" class="booking-form__label">Email</label>
+                    <input asp-for="ContactEmail" class="booking-form__input" autocomplete="email" />
+                    <span asp-validation-for="ContactEmail" class="booking-form__err"></span>
+                </div>
+            </div>
+
+            <h2 class="booking-card__heading">Lịch &amp; số khách</h2>
+            <div class="booking-form__grid">
+                <div class="form-group booking-form__full">
+                    <label asp-for="TravelDate" class="booking-form__label">Ngày đi</label>
+                    <input asp-for="TravelDate" type="date" class="booking-form__input" />
+                    <span asp-validation-for="TravelDate" class="booking-form__err"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Adults" class="booking-form__label">Người lớn</label>
+                    <input asp-for="Adults" type="number" min="1" max="50" class="booking-form__input booking-form__qty" id="adultsInput" />
+                    <span asp-validation-for="Adults" class="booking-form__err"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Children" class="booking-form__label">Trẻ em (70% giá)</label>
+                    <input asp-for="Children" type="number" min="0" max="50" class="booking-form__input booking-form__qty" id="childrenInput" />
+                    <span asp-validation-for="Children" class="booking-form__err"></span>
+                </div>
+            </div>
+
+            <h2 class="booking-card__heading">Hình thức thanh toán</h2>
+            <div class="booking-form__grid">
+                <div class="form-group booking-form__full">
+                    <label class="booking-form__label">Chọn phương thức</label>
+                    <div class="booking-form__radios">
+                        <label class="booking-radio">
+                            <input asp-for="PaymentMode" type="radio" value="0" /> Thanh toán 100%
+                        </label>
+                        <label class="booking-radio">
+                            <input asp-for="PaymentMode" type="radio" value="1" /> Trả góp (cọc 30% + trả dần)
+                        </label>
+                    </div>
+                    <p class="booking-form__hint">
+                        Trả góp chỉ áp dụng cho đơn có từ <strong>3 người</strong> trở lên.
+                    </p>
+                    <span asp-validation-for="PaymentMode" class="booking-form__err"></span>
+                </div>
+
+                <div class="form-group booking-form__full">
+                    <label asp-for="InstallmentMonths" class="booking-form__label">Số tháng trả góp</label>
+                    <select asp-for="InstallmentMonths" class="booking-form__input">
+                        <option value="3">3 tháng</option>
+                        <option value="6">6 tháng</option>
+                    </select>
+                    <span asp-validation-for="InstallmentMonths" class="booking-form__err"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Note" class="booking-form__label">Ghi chú (tùy chọn)</label>
+                <textarea asp-for="Note" class="booking-form__textarea" rows="3" placeholder="Dị ứng, yêu cầu phòng, số trẻ em cụ thể…"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn--primary booking-form__submit">
+                <i class="fa-solid fa-circle-check" aria-hidden="true"></i> Xác nhận đặt tour
+            </button>
+        </form>
+
+        <aside class="booking-summary" aria-live="polite">
+            <div class="booking-summary__card">
+                <h2 class="booking-summary__title">Tạm tính</h2>
+                <dl class="booking-summary__lines">
+                    <div>
+                        <dt>Đơn giá người lớn</dt>
+                        <dd>@Model.UnitPrice.ToString("N0") đ</dd>
+                    </div>
+                    <div>
+                        <dt>Trẻ em (ước tính / trẻ)</dt>
+                        <dd>@((Model.UnitPrice * childRate).ToString("N0")) đ</dd>
+                    </div>
+                </dl>
+                <p class="booking-summary__total">
+                    <span>Tổng dự kiến</span>
+                    <strong id="estimatedTotal">@Model.UnitPrice.ToString("N0") đ</strong>
+                </p>
+                <p class="booking-summary__note">Số tiền cuối cùng khớp khi hệ thống xác nhận (theo số người lớn / trẻ em bạn nhập).</p>
+            </div>
+            <a asp-area="" asp-controller="Tours" asp-action="Details" asp-route-id="@Model.TourId" class="booking-summary__back">
+                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Quay lại chi tiết tour
+            </a>
+        </aside>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            var unit = parseFloat(document.getElementById('unitPrice').value.replace(',', '.')) || 0;
+            var adultsEl = document.getElementById('adultsInput');
+            var childrenEl = document.getElementById('childrenInput');
+            var totalEl = document.getElementById('estimatedTotal');
+            var childRate = 0.7;
+            function fmt(n) {
+                return Math.round(n).toLocaleString('vi-VN') + ' đ';
+            }
+            function recalc() {
+                var a = parseInt(adultsEl.value, 10) || 0;
+                var c = parseInt(childrenEl.value, 10) || 0;
+                var sum = a * unit + c * unit * childRate;
+                totalEl.textContent = fmt(sum);
+            }
+            adultsEl.addEventListener('input', recalc);
+            childrenEl.addEventListener('input', recalc);
+            recalc();
+        })();
+    </script>
+}

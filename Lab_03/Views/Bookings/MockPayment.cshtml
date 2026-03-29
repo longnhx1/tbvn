@@ -1,0 +1,46 @@
+@model Lab_03.Models.Booking
+@{
+    ViewData["Title"] = "Thanh toán (demo)";
+    var dueAmount = ViewData["DueAmount"] as decimal? ?? Model.TotalPrice;
+    var dueLabel = ViewData["DueLabel"] as string ?? "Thanh toán";
+}
+
+<div class="booking-page">
+    <div class="mock-pay">
+        <header class="mock-pay__header">
+            <span class="mock-pay__badge">Chỉ mô phỏng — không thu tiền thật</span>
+            <h1 class="mock-pay__title">Thanh toán đặt tour</h1>
+            <p class="mock-pay__lead">Bước này mô phỏng cổng thanh toán cho đồ án. Không có kết nối VNPay/Momo hay thẻ thật.</p>
+        </header>
+
+        <div class="mock-pay__card">
+            <dl class="mock-pay__dl">
+                <div><dt>Mã đặt chỗ</dt><dd>#@Model.Id</dd></div>
+                <div><dt>Tour</dt><dd>@(Model.Tour?.Name ?? "-")</dd></div>
+                <div><dt>Email liên hệ</dt><dd>@Model.ContactEmail</dd></div>
+                <div><dt>@dueLabel</dt><dd class="mock-pay__amount">@dueAmount.ToString("N0") đ</dd></div>
+            </dl>
+
+            <p class="mock-pay__note">Chỗ trên xe/tour đã được giữ sau khi bạn đặt. Thanh toán demo chỉ đánh dấu “đã trả” trong hệ thống demo.</p>
+
+            <div class="mock-pay__actions">
+                <form asp-action="MockPayment" asp-route-id="@Model.Id" method="post" class="mock-pay__form">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="success" value="true" />
+                    <button type="submit" class="btn btn--primary mock-pay__btn-ok">
+                        <i class="fa-solid fa-circle-check" aria-hidden="true"></i> Thanh toán thành công (demo)
+                    </button>
+                </form>
+                <form asp-action="MockPayment" asp-route-id="@Model.Id" method="post" class="mock-pay__form">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="success" value="false" />
+                    <button type="submit" class="btn btn--ghost mock-pay__btn-fail">
+                        <i class="fa-solid fa-xmark" aria-hidden="true"></i> Hủy / Giả lập lỗi
+                    </button>
+                </form>
+            </div>
+
+            <a asp-action="Confirmation" asp-route-id="@Model.Id" class="mock-pay__back">Quay lại xác nhận đặt chỗ</a>
+        </div>
+    </div>
+</div>

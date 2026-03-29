@@ -1,0 +1,39 @@
+@model Lab_03.Models.ViewModels.AdminUserListRowViewModel
+@{
+    ViewData["Title"] = "Xóa tài khoản";
+    var hasBookings = ViewBag.HasBookings as bool? ?? false;
+    var isOnlyAdmin = ViewBag.IsOnlyAdmin as bool? ?? false;
+    var canDelete = !hasBookings && !isOnlyAdmin;
+}
+
+<div class="admin-page">
+    <header class="admin-page__header">
+        <div class="admin-page__header-main">
+            <p class="admin-page__eyebrow"><i class="fa-solid fa-user-slash"></i> Người dùng</p>
+            <h1 class="admin-page__title">Xóa tài khoản</h1>
+        </div>
+        <a asp-action="Index" class="admin-btn admin-btn--ghost">Hủy</a>
+    </header>
+
+    <div class="admin-card admin-card--padded">
+        <p>Bạn có chắc muốn xóa tài khoản <strong>@Model.Email</strong> (@Model.FullName)?</p>
+        <p class="admin-muted">Vai trò hiện tại: @string.Join(", ", Model.Roles)</p>
+
+        @if (hasBookings)
+        {
+            <div class="admin-alert admin-alert--error" role="alert">Tài khoản có lịch sử đặt tour — không thể xóa cứng.</div>
+        }
+        @if (isOnlyAdmin)
+        {
+            <div class="admin-alert admin-alert--error" role="alert">Đây là quản trị viên cuối cùng — không thể xóa.</div>
+        }
+
+        @if (canDelete)
+        {
+            <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="admin-form-actions" style="margin-top:1.25rem;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="admin-btn admin-btn--danger">Xóa vĩnh viễn</button>
+            </form>
+        }
+    </div>
+</div>

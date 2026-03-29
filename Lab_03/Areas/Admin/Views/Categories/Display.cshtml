@@ -1,0 +1,24 @@
+@model Lab_03.Models.Destination
+
+<h2>Điểm đến: @Model.Name</h2>
+
+<div>
+    <p><strong>Tours trong điểm đến này:</strong></p>
+    @if (Model.Tours != null && Model.Tours.Any())
+    {
+        <ul>
+            @foreach (var p in Model.Tours)
+            {
+                <li>@p.Name (@p.Price.ToString("C"))</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Chưa có tour nào trong điểm đến này.</p>
+    }
+</div>
+
+<br />
+
+<a asp-action="Index">Back to List</a>

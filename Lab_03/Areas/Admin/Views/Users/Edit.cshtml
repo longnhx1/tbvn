@@ -1,0 +1,56 @@
+@model Lab_03.Models.ViewModels.AdminEditUserViewModel
+@{
+    ViewData["Title"] = "Sửa tài khoản";
+}
+
+<div class="admin-page">
+    <header class="admin-page__header">
+        <div class="admin-page__header-main">
+            <p class="admin-page__eyebrow"><i class="fa-solid fa-user-pen"></i> Người dùng</p>
+            <h1 class="admin-page__title">Cập nhật tài khoản</h1>
+            <p class="admin-page__subtitle">@Model.Email</p>
+        </div>
+        <a asp-action="Index" class="admin-btn admin-btn--ghost">Quay lại</a>
+    </header>
+
+    <div class="admin-card admin-card--padded">
+        <form asp-action="Edit" method="post" class="admin-form-grid">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Email" />
+
+            <div class="admin-field">
+                <label class="admin-field__label">Email</label>
+                <input class="admin-field__input" value="@Model.Email" disabled />
+            </div>
+
+            <div class="admin-field">
+                <label asp-for="FullName" class="admin-field__label"></label>
+                <input asp-for="FullName" class="admin-field__input" />
+                <span asp-validation-for="FullName" class="admin-field__error"></span>
+            </div>
+
+            <div class="admin-field">
+                <label asp-for="PhoneNumber" class="admin-field__label"></label>
+                <input asp-for="PhoneNumber" class="admin-field__input" />
+            </div>
+
+            <div class="admin-field">
+                <label asp-for="Role" class="admin-field__label"></label>
+                <select asp-for="Role" asp-items="Model.RoleOptions" class="admin-field__input"></select>
+                <span asp-validation-for="Role" class="admin-field__error"></span>
+            </div>
+
+            <div asp-validation-summary="ModelOnly" class="admin-alert admin-alert--error" role="alert"></div>
+
+            <div class="admin-form-actions">
+                <button type="submit" class="admin-btn admin-btn--primary">Lưu thay đổi</button>
+                <a asp-action="Index" class="admin-btn admin-btn--ghost">Hủy</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

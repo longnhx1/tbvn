@@ -1,0 +1,60 @@
+@model Lab_03.Models.ViewModels.AdminCreateUserViewModel
+@{
+    ViewData["Title"] = "Tạo tài khoản";
+}
+
+<div class="admin-page">
+    <a class="admin-back-link" asp-action="Index"><i class="fa-solid fa-arrow-left"></i> Danh sách tài khoản</a>
+
+    <header class="admin-page__header">
+        <div class="admin-page__header-main">
+            <p class="admin-page__eyebrow"><i class="fa-solid fa-user-plus"></i> Tài khoản</p>
+            <h1 class="admin-page__title">Tạo tài khoản</h1>
+            <p class="admin-page__subtitle">Dành cho nhân viên hoặc đối tác. Không tạo được tài khoản Admin từ đây.</p>
+        </div>
+    </header>
+
+    <div class="admin-card" style="max-width:560px;">
+        <div class="admin-card__body admin-card__body--padded">
+            <form asp-action="Create" method="post" class="admin-form-stack">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                <div class="form-group">
+                    <label asp-for="FullName" class="form-label"></label>
+                    <input asp-for="FullName" class="form-control" autocomplete="name" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" autocomplete="username" type="email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Role" class="form-label"></label>
+                    <select asp-for="Role" asp-items="Model.RoleOptions" class="form-control"></select>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" class="form-control" autocomplete="new-password" type="password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword" class="form-label"></label>
+                    <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" type="password" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+
+                <div class="admin-form-actions">
+                    <button type="submit" class="admin-btn admin-btn--primary">Lưu</button>
+                    <a asp-action="Index" class="admin-btn admin-btn--ghost">Hủy</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

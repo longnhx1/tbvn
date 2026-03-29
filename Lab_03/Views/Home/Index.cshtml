@@ -1,0 +1,206 @@
+@model Lab_03.Models.ViewModels.HomeIndexViewModel
+@{
+    ViewData["Title"] = "Trang chủ";
+    var placeImages = new[]
+    {
+        "/images/c0c9124a-vinh-ha-long-1.jpg",
+        "/images/places/Vinh-Ha-Long-1.jpg.webp",
+        "/images/places/kinh-nghiem-du-lich-da-lat-tu-a-z-de-trai-nghiem-ve-dep-cuoc-song-1.jpg",
+        "/images/places/phan-thiet-4.jpg",
+        "/images/places/phu-quoc-17506756503251936667562.jpg",
+        "/images/places/Thacbac3.jpg"
+    };
+    var destIndex = 0;
+}
+
+<link rel="stylesheet" href="~/css/home-landing.css" asp-append-version="true" />
+
+<section class="hero hero--travel" aria-label="Khám phá du lịch Việt Nam">
+    <div class="hero__inner">
+        <div class="hero__content">
+            <span class="hero__tag">Travel Booking Việt Nam</span>
+            <h1 class="hero__title">Khám phá tour Việt Nam dễ dàng</h1>
+            <p class="hero__subtitle">
+                Đặt tour nhanh, lịch trình rõ ràng, giá minh bạch.
+                Sẵn sàng cho chuyến đi tiếp theo của bạn.
+            </p>
+
+            <form class="hero-search" asp-area="" asp-controller="Tours" asp-action="Index" method="get" role="search">
+                <span class="hero-search__icon" aria-hidden="true"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <label for="home-search-q" class="sr-only">Tìm tour hoặc điểm đến</label>
+                <input id="home-search-q" class="hero-search__input" type="search" name="q" placeholder="Tìm tour, điểm đến, điểm khởi hành…" autocomplete="off" />
+                <button type="submit" class="hero-search__btn">Tìm tour</button>
+            </form>
+
+            <div class="hero__actions hero__actions--stack">
+                <a asp-area="" asp-controller="Tours" asp-action="Index" class="btn btn--primary">Xem tất cả tour</a>
+                <a asp-area="" asp-controller="Bookings" asp-action="MyOrders" class="btn btn--bookings-cta">
+                    <i class="fa-solid fa-clipboard-list" aria-hidden="true"></i>
+                    Tour đã đặt của tôi
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-stats" aria-label="Cam kết dịch vụ">
+            <div class="hero-stats__item">
+                <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                <div>
+                    <strong>Minh bạch</strong>
+                    Giá và lịch rõ ràng trước khi đặt
+                </div>
+            </div>
+            <div class="hero-stats__item">
+                <i class="fa-solid fa-headset" aria-hidden="true"></i>
+                <div>
+                    <strong>Hỗ trợ 24/7</strong>
+                    Đội ngũ tư vấn qua hotline &amp; email
+                </div>
+            </div>
+            <div class="hero-stats__item">
+                <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
+                <div>
+                    <strong>Toàn quốc</strong>
+                    Tour nội địa khắp ba miền
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" aria-labelledby="featuredHeading">
+    <div class="section__header">
+        <h2 class="section__title" id="featuredHeading">Tour nổi bật</h2>
+        <a asp-area="" asp-controller="Tours" asp-action="Index" class="section__link">Xem tất cả <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+    </div>
+
+    @if (Model.FeaturedTours.Count == 0)
+    {
+        <div class="empty-featured">
+            <i class="fa-solid fa-suitcase-rolling" aria-hidden="true"></i>
+            <p><strong>Chưa có tour trong hệ thống.</strong></p>
+            <p>Đăng nhập quản trị để thêm tour và điểm đến, sau đó chúng sẽ hiển thị tại đây.</p>
+            <a asp-area="" asp-controller="Tours" asp-action="Index" class="btn btn--primary" style="margin-top:1rem;display:inline-block;">Đến trang tour</a>
+        </div>
+    }
+    else
+    {
+        <div class="tickets-grid">
+            @foreach (var tour in Model.FeaturedTours)
+            {
+                <article class="ticket-card">
+                    <a asp-area="" asp-controller="Tours" asp-action="Details" asp-route-id="@tour.Id" class="ticket-card__image-link">
+                        <div class="ticket-card__image-wrap">
+                            <img src="@(string.IsNullOrWhiteSpace(tour.ImageUrl) ? "/images/c0c9124a-vinh-ha-long-1.jpg" : tour.ImageUrl)" alt="@tour.Name" loading="lazy" />
+                        </div>
+                    </a>
+                    <div class="ticket-card__body">
+                        <p class="ticket-card__brand">@(tour.Destination?.Name ?? "Tour")</p>
+                        <h3 class="ticket-card__name">
+                            <a asp-area="" asp-controller="Tours" asp-action="Details" asp-route-id="@tour.Id">@tour.Name</a>
+                        </h3>
+                        <p class="ticket-card__brand" style="text-transform:none;letter-spacing:0;font-weight:500;">
+                            <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                            @tour.DepartureDate.ToString("dd/MM/yyyy")
+                            · @tour.DurationDays ngày
+                        </p>
+                        <div class="ticket-card__pricing">
+                            <span class="ticket-card__price">@tour.Price.ToString("N0") đ</span>
+                            <span class="ticket-card__original-price">/ khách</span>
+                        </div>
+                        <a asp-area="" asp-controller="Bookings" asp-action="Create" asp-route-tourId="@tour.Id" class="btn btn--primary">Đặt ngay</a>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>
+
+<section class="section section--gray" aria-labelledby="categoriesHeading">
+    <div class="section__header">
+        <h2 class="section__title" id="categoriesHeading">Danh sách chuyến bay</h2>
+        <a asp-area="" asp-controller="Tours" asp-action="Index" class="section__link">Tất cả chuyến bay<i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+    </div>
+
+    <div class="categories-grid">
+
+        <a asp-area="" asp-controller="Tours" asp-action="Index" asp-route-q="Vietnam Airlines" class="category-card" aria-label="Xem chuyến bay Vietnam Airlines">
+            <div class="category-card__icon-wrap">
+                <img src="/images/flight/VA.png" alt="Vietnam Airlines" width="48" height="48" />
+            </div>
+            <span class="category-card__name">Vietnam Airlines</span>
+            <span class="category-card__count">24 vé</span>
+        </a>
+
+        <a asp-area="" asp-controller="Tours" asp-action="Index" asp-route-q="Vietjet Air" class="category-card" aria-label="Xem chuyến bay Vietjet Air">
+            <div class="category-card__icon-wrap">
+                <img src="/images/flight/vietjet.png" alt="Vietjet Air" width="48" height="48" />
+            </div>
+            <span class="category-card__name">Vietjet Air</span>
+            <span class="category-card__count">31 vé</span>
+        </a>
+
+        <a asp-area="" asp-controller="Tours" asp-action="Index" asp-route-q="Bamboo Airways" class="category-card" aria-label="Xem chuyến bay Bamboo Airways">
+            <div class="category-card__icon-wrap">
+                <img src="/images/flight/bamboo.png" alt="Bamboo Airways" width="48" height="48" />
+            </div>
+            <span class="category-card__name">Bamboo Airways</span>
+            <span class="category-card__count">18 vé</span>
+        </a>
+
+        <a asp-area="" asp-controller="Tours" asp-action="Index" asp-route-q="Pacific Airlines" class="category-card" aria-label="Xem chuyến bay Pacific Airlines">
+            <div class="category-card__icon-wrap">
+                <img src="/images/flight/PA.png" alt="Pacific Airlines" width="48" height="48" />
+            </div>
+            <span class="category-card__name">Pacific Airlines</span>
+            <span class="category-card__count">52 vé</span>
+        </a>
+
+        <a asp-area="" asp-controller="Tours" asp-action="Index" asp-route-q="Vietravel Airlines" class="category-card" aria-label="Xem chuyến bay Vietravel Airlines">
+            <div class="category-card__icon-wrap">
+                <img src="/images/flight/vietravel.png" alt="Vietravel" width="48" height="48" />
+            </div>
+            <span class="category-card__name">Vietravel Airlines</span>
+            <span class="category-card__count">12 vé</span>
+        </a>
+
+        <a asp-area="" asp-controller="Tours" asp-action="Index" asp-route-q="VASCO" class="category-card" aria-label="Xem chuyến bay VASCO">
+            <div class="category-card__icon-wrap">
+                <img src="/images/flight/vasco.png" alt="Vasco" width="48" height="48" />
+            </div>
+            <span class="category-card__name">VASCO</span>
+            <span class="category-card__count">9 vé</span>
+        </a>
+
+    </div>
+</section>
+
+
+<section class="section section--gray" aria-labelledby="destinationHeading">
+    <div class="section__header">
+        <h2 class="section__title" id="destinationHeading">Điểm đến phổ biến</h2>
+        <a asp-area="" asp-controller="Tours" asp-action="Index" class="section__link">Khám phá tour <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+    </div>
+
+    @if (Model.Destinations.Count == 0)
+    {
+        <p class="empty-featured" style="border-style:solid;">Chưa có điểm đến. Thêm trong trang quản trị.</p>
+    }
+    else
+    {
+        <div class="dest-grid">
+            @foreach (var destination in Model.Destinations)
+            {
+                var bg = placeImages[destIndex % placeImages.Length];
+                destIndex++;
+                var count = destination.Tours?.Count ?? 0;
+                <a asp-area="" asp-controller="Tours" asp-action="Index" asp-route-q="@destination.Name" class="dest-card">
+                    <span class="dest-card__bg" style="background-image: url('@bg');"></span>
+                    <span class="dest-card__name">@destination.Name</span>
+                    <span class="dest-card__meta">@count tour · Bấm để tìm theo điểm đến</span>
+                </a>
+            }
+        </div>
+    }
+</section>
+
+<script src="~/js/home-landing.js" asp-append-version="true"></script>
