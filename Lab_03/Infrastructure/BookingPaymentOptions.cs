@@ -12,7 +12,7 @@ public class BookingPaymentOptions
     public decimal MonthlyInterestPercent { get; set; } = 1.0m;
 
     // Các lựa chọn số tháng trả góp hợp lệ.
-    public int[] AllowedInstallmentMonths { get; set; } = new[] { 3, 6 };
+    public int[] AllowedInstallmentMonths { get; set; } = new[] { 3, 6, 9, 12 };
 
     // Nếu không parse được % từ CancellationPolicy thì fallback vào đây.
     public decimal RefundPercentFallback { get; set; } = 0.75m;

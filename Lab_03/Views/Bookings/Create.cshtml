@@ -73,17 +73,16 @@
                             <input asp-for="PaymentMode" type="radio" value="1" /> Trả góp (cọc 30% + trả dần)
                         </label>
                     </div>
-                    <p class="booking-form__hint">
-                        Trả góp chỉ áp dụng cho đơn có từ <strong>3 người</strong> trở lên.
-                    </p>
                     <span asp-validation-for="PaymentMode" class="booking-form__err"></span>
                 </div>
 
-                <div class="form-group booking-form__full">
+                <div class="form-group booking-form__full" id="installmentSection" style="display:@(Model.PaymentMode == Lab_03.Models.BookingPaymentMode.Installment ? "block" : "none")">
                     <label asp-for="InstallmentMonths" class="booking-form__label">Số tháng trả góp</label>
                     <select asp-for="InstallmentMonths" class="booking-form__input">
                         <option value="3">3 tháng</option>
-                        <option value="6">6 tháng</option>
+                        <option value="6">6 tháng</option>  
+                        <option value="9">9 tháng</option>
+                        <option value="12">12 tháng</option>
                     </select>
                     <span asp-validation-for="InstallmentMonths" class="booking-form__err"></span>
                 </div>
@@ -113,7 +112,7 @@
                     </div>
                 </dl>
                 <p class="booking-summary__total">
-                    <span>Tổng dự kiến</span>
+                    <span id="estimatedTotalLabel">Tổng dự kiến</span>
                     <strong id="estimatedTotal">@Model.UnitPrice.ToString("N0") đ</strong>
                 </p>
                 <p class="booking-summary__note">Số tiền cuối cùng khớp khi hệ thống xác nhận (theo số người lớn / trẻ em bạn nhập).</p>
@@ -133,19 +132,69 @@
             var adultsEl = document.getElementById('adultsInput');
             var childrenEl = document.getElementById('childrenInput');
             var totalEl = document.getElementById('estimatedTotal');
+            var totalLabelEl = document.getElementById('estimatedTotalLabel');
+            var installmentSectionEl = document.getElementById('installmentSection');
             var childRate = 0.7;
+            var depositPercent = 0.3; // 30% theo cấu hình (DownPaymentPercent)
+            var paymentModeRadios = document.querySelectorAll('input[name="PaymentMode"]');
+
             function fmt(n) {
                 return Math.round(n).toLocaleString('vi-VN') + ' đ';
             }
+
+            function getSelectedPaymentMode() {
+                var checked = document.querySelector('input[name="PaymentMode"]:checked');
+                // asp-for PaymentMode uses value="0" (Full) / "1" (Installment)
+                return checked ? checked.value : "0";
+            }
+
+            function updateInstallmentVisibilityAndTotal() {
+                var paymentMode = getSelectedPaymentMode();
+                var isInstallment = paymentMode === "1";
+
+                if (installmentSectionEl) {
+                    installmentSectionEl.style.display = isInstallment ? "block" : "none";
+                }
+
+                if (totalLabelEl) {
+                    totalLabelEl.textContent = isInstallment
+                        ? "Tiền cọc dự kiến"
+                        : "Tổng dự kiến";
+                }
+            }
+
             function recalc() {
                 var a = parseInt(adultsEl.value, 10) || 0;
                 var c = parseInt(childrenEl.value, 10) || 0;
-                var sum = a * unit + c * unit * childRate;
-                totalEl.textContent = fmt(sum);
+                var fullTotal = a * unit + c * unit * childRate;
+
+                var paymentMode = getSelectedPaymentMode();
+                if (paymentMode === "1") {
+                    // Trả góp: chỉ hiển thị tiền cọc (30%) dự kiến.
+                    totalEl.textContent = fmt(fullTotal * depositPercent);
+                } else {
+                    // 100%: hiển thị tổng dự kiến.
+                    totalEl.textContent = fmt(fullTotal);
+                }
             }
-            adultsEl.addEventListener('input', recalc);
-            childrenEl.addEventListener('input', recalc);
+
+            // Toggle + recalc ngay khi load (để xử lý cả trường hợp model state invalid).
+            updateInstallmentVisibilityAndTotal();
             recalc();
+
+            paymentModeRadios.forEach(function (r) {
+                r.addEventListener('change', function () {
+                    updateInstallmentVisibilityAndTotal();
+                    recalc();
+                });
+            });
+
+            adultsEl.addEventListener('input', function () {
+                recalc();
+            });
+            childrenEl.addEventListener('input', function () {
+                recalc();
+            });
         })();
     </script>
 }
